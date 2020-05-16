@@ -4,7 +4,7 @@ package data;
  * Implementation of Video interface.
  * @see Data
  */
-final class VideoObj implements Video {
+public class VideoObj implements Video {
 	private final String _title;
 	private final int    _year;
 	private final String _director;
@@ -16,7 +16,7 @@ final class VideoObj implements Video {
 	 * @param year        year
 	 * @param director    director
 	 */
-	VideoObj(String title, int year, String director) {
+	public VideoObj(String title, int year, String director) {
 		if (title == null || title == "" || title == " ")
 			throw new IllegalArgumentException("Title must be non-null, have no leading or "
 					+ "final spaces, and not be an empty string");
