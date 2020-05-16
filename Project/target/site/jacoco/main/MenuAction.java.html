@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MenuAction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project</a> &gt; <a href="index.source.html" class="el_package">main</a> &gt; <span class="el_source">MenuAction.java</span></div><h1>MenuAction.java</h1><pre class="source lang-java linenums">
+package main;
+
+import ui.UI;
+import ui.UIFormMenuInterface;
+import ui.UIMenuAction;
+import ui.UIFormMenuBuilderInterface;
+import ui.UIError;
+import ui.UIFormTest;
+import data.Data;
+import data.Inventory;
+import data.Video;
+import data.Record;
+import command.Command;
+import java.util.Iterator;
+import java.util.Comparator;
+
+/**
+ * MenuAction enums
+ * 
+ * @author Stephen Kim
+ *
+ */
+<span class="nc" id="L24">public enum MenuAction {</span>
+	
+	
+	
+<span class="nc" id="L28">	DEFAULT(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L30">			Control._ui.displayError(&quot;doh!&quot;);</span>
+<span class="nc" id="L31">		}</span>
+	}),
+<span class="nc" id="L33">	ADDREMOVE(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L35">			String[] result1 = Control._ui.processForm(Control._getVideoForm);</span>
+<span class="nc" id="L36">			Video v = Data.newVideo(result1[0], Integer.parseInt(result1[1]), result1[2]);</span>
+
+<span class="nc" id="L38">			UIFormMenuBuilderInterface f = (UIFormMenuBuilderInterface) Control.uiFactory.start(&quot;UIFMB&quot;, null, null);;</span>
+<span class="nc" id="L39">			f.add(&quot;Number of copies to add/remove&quot;, Control._numberTest);</span>
+<span class="nc" id="L40">			String[] result2 = Control._ui.processForm(f.toUIFormMenu(&quot;&quot;));</span>
+
+<span class="nc" id="L42">			Command c = Data.newAddCmd(Control._inventory, v, Integer.parseInt(result2[0]));</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">			if (! c.run()) {</span>
+<span class="nc" id="L44">				Control._ui.displayError(&quot;Command failed&quot;);</span>
+			}
+<span class="nc" id="L46">		}</span>
+	}),
+<span class="nc" id="L48">	CHECKIN(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L50">			String[] result1 = Control._ui.processForm(Control._getVideoForm);</span>
+<span class="nc" id="L51">			Video v = Data.newVideo(result1[0], Integer.parseInt(result1[1]), result1[2]);</span>
+
+<span class="nc" id="L53">			Command c = Data.newInCmd(Control._inventory, v);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">			if (! c.run()) {</span>
+<span class="nc" id="L55">				Control._ui.displayError(&quot;Command failed&quot;);</span>
+			}
+<span class="nc" id="L57">		}</span>
+	}),
+<span class="nc" id="L59">	CHECKOUT(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L61">			String[] result1 = Control._ui.processForm(Control._getVideoForm);</span>
+<span class="nc" id="L62">			Video v = Data.newVideo(result1[0], Integer.parseInt(result1[1]), result1[2]);</span>
+
+<span class="nc" id="L64">			Command c = Data.newOutCmd(Control._inventory, v);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">			if (! c.run()) {</span>
+<span class="nc" id="L66">				Control._ui.displayError(&quot;Command failed&quot;);</span>
+			} 
+<span class="nc" id="L68">		}</span>
+	}),
+<span class="nc" id="L70">	PRINT(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L72">			Control._ui.displayMessage(Control._inventory.toString());</span>
+<span class="nc" id="L73">		}</span>
+	}),
+<span class="nc" id="L75">	CLEAR(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">			if (!Data.newClearCmd(Control._inventory).run()) {</span>
+<span class="nc" id="L78">				Control._ui.displayError(&quot;Command failed&quot;);</span>
+			}
+<span class="nc" id="L80">		}</span>
+	}),
+<span class="nc" id="L82">	UNDO(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">			if (!Data.newUndoCmd(Control._inventory).run()) {</span>
+<span class="nc" id="L85">				Control._ui.displayError(&quot;Command failed&quot;);</span>
+			}
+<span class="nc" id="L87">		}</span>
+	}),
+<span class="nc" id="L89">	REDO(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc bnc" id="L91" title="All 2 branches missed.">			if (!Data.newRedoCmd(Control._inventory).run()) {</span>
+<span class="nc" id="L92">				Control._ui.displayError(&quot;Command failed&quot;);</span>
+			}
+<span class="nc" id="L94">		}</span>
+	}),
+<span class="nc" id="L96">	TOPTEN(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc bnc" id="L98" title="All 2 branches missed.">			if (Control._inventory.size() &gt; 0)</span>
+			{
+<span class="nc" id="L100">				Iterator&lt;Record&gt; it = Control._inventory.iterator(new Comparator&lt;Record&gt;()</span>
+<span class="nc" id="L101">				{</span>
+
+					public int compare(Record r1, Record r2)
+					{
+<span class="nc" id="L105">						return r2.numOut() - r1.numOut();</span>
+					}
+				});
+
+<span class="nc" id="L109">				StringBuilder b = new StringBuilder();</span>
+<span class="nc" id="L110">				int counter = 1;</span>
+<span class="nc" id="L111">				b.append(&quot;top ten all time rentals in order: \n&quot;);</span>
+<span class="nc bnc" id="L112" title="All 4 branches missed.">				while (it.hasNext() &amp;&amp; counter &lt; 11)</span>
+				{
+<span class="nc" id="L114">					Record r = it.next();</span>
+<span class="nc" id="L115">					b.append(&quot; &quot; + r.video().title() + &quot; [&quot; + r.numOwned() + &quot;]\n&quot;);</span>
+
+<span class="nc" id="L117">					counter++;</span>
+<span class="nc" id="L118">				}</span>
+<span class="nc" id="L119">				Control._ui.displayMessage(b.toString());</span>
+<span class="nc" id="L120">			} else</span>
+			{
+<span class="nc" id="L122">				Control._ui.displayError(&quot;Inventory is Empty!&quot;);</span>
+			}    
+<span class="nc" id="L124">		}</span>
+	}),
+<span class="nc" id="L126">	EXIT(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L128">			Control._state = State.EXIT.getValue();</span>
+<span class="nc" id="L129">		}</span>
+	}),
+<span class="nc" id="L131">	BOGUSINIT(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L133">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;a&quot;, 2000, &quot;m&quot;), 1).run();</span>
+<span class="nc" id="L134">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;b&quot;, 2000, &quot;m&quot;), 2).run();</span>
+<span class="nc" id="L135">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;c&quot;, 2000, &quot;m&quot;), 3).run();</span>
+<span class="nc" id="L136">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;d&quot;, 2000, &quot;m&quot;), 4).run();</span>
+<span class="nc" id="L137">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;e&quot;, 2000, &quot;m&quot;), 5).run();</span>
+<span class="nc" id="L138">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;f&quot;, 2000, &quot;m&quot;), 6).run();</span>
+<span class="nc" id="L139">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;g&quot;, 2000, &quot;m&quot;), 7).run();</span>
+<span class="nc" id="L140">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;h&quot;, 2000, &quot;m&quot;), 8).run();</span>
+<span class="nc" id="L141">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;i&quot;, 2000, &quot;m&quot;), 9).run();</span>
+<span class="nc" id="L142">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;j&quot;, 2000, &quot;m&quot;), 10).run();</span>
+<span class="nc" id="L143">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;k&quot;, 2000, &quot;m&quot;), 11).run();</span>
+<span class="nc" id="L144">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;l&quot;, 2000, &quot;m&quot;), 12).run();</span>
+<span class="nc" id="L145">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;m&quot;, 2000, &quot;m&quot;), 13).run();</span>
+<span class="nc" id="L146">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;n&quot;, 2000, &quot;m&quot;), 14).run();</span>
+<span class="nc" id="L147">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;o&quot;, 2000, &quot;m&quot;), 15).run();</span>
+<span class="nc" id="L148">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;p&quot;, 2000, &quot;m&quot;), 16).run();</span>
+<span class="nc" id="L149">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;q&quot;, 2000, &quot;m&quot;), 17).run();</span>
+<span class="nc" id="L150">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;r&quot;, 2000, &quot;m&quot;), 18).run();</span>
+<span class="nc" id="L151">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;s&quot;, 2000, &quot;m&quot;), 19).run();</span>
+<span class="nc" id="L152">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;t&quot;, 2000, &quot;m&quot;), 20).run();</span>
+<span class="nc" id="L153">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;u&quot;, 2000, &quot;m&quot;), 21).run();</span>
+<span class="nc" id="L154">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;v&quot;, 2000, &quot;m&quot;), 22).run();</span>
+<span class="nc" id="L155">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;w&quot;, 2000, &quot;m&quot;), 23).run();</span>
+<span class="nc" id="L156">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;x&quot;, 2000, &quot;m&quot;), 24).run();</span>
+<span class="nc" id="L157">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;y&quot;, 2000, &quot;m&quot;), 25).run();</span>
+<span class="nc" id="L158">			Data.newAddCmd(Control._inventory, Data.newVideo(&quot;z&quot;, 2000, &quot;m&quot;), 26).run();</span>
+<span class="nc" id="L159">		}</span>
+	}),
+<span class="nc" id="L161">	YES(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L163">			Control._state = State.EXITED.getValue();</span>
+<span class="nc" id="L164">		}</span>
+	}),
+<span class="nc" id="L166">	NO(new UIMenuAction() {</span>
+		public void run() {
+<span class="nc" id="L168">			Control._state = State.START.getValue();</span>
+<span class="nc" id="L169">		}</span>
+	});
+	;
+	private UIMenuAction action;
+	//Constructor
+<span class="nc" id="L174">	private MenuAction(UIMenuAction action) {</span>
+<span class="nc" id="L175">		this.action = action;</span>
+<span class="nc" id="L176">	}</span>
+	//Getter
+	public UIMenuAction getAction() {
+<span class="nc" id="L179">		return action;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

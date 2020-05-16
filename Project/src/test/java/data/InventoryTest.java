@@ -19,8 +19,8 @@ import java.util.Iterator;
  * @author Stephen Kim
  *
  */
-public class InventoryTEST extends TestCase {
-  public InventoryTEST(String name) {
+public class InventoryTest extends TestCase {
+  public InventoryTest(String name) {
     super(name);
   }
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandHistoryObj.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project</a> &gt; <a href="index.source.html" class="el_package">command</a> &gt; <span class="el_source">CommandHistoryObj.java</span></div><h1>CommandHistoryObj.java</h1><pre class="source lang-java linenums">package command;
+import java.util.EmptyStackException;
+import java.util.Stack;
+
+<span class="fc" id="L5">final class CommandHistoryObj implements CommandHistory {</span>
+<span class="fc" id="L6">  Stack&lt;UndoableCommand&gt; _undoStack = new Stack&lt;UndoableCommand&gt;();</span>
+<span class="fc" id="L7">  Stack&lt;UndoableCommand&gt; _redoStack = new Stack&lt;UndoableCommand&gt;();</span>
+<span class="fc" id="L8">  RerunnableCommand _undoCmd = new RerunnableCommand () {</span>
+      public boolean run () {
+<span class="nc bnc" id="L10" title="All 2 branches missed.">        boolean result = !_undoStack.empty();</span>
+        try {
+<span class="nc bnc" id="L12" title="All 2 branches missed.">        	if (result) {</span>
+<span class="nc" id="L13">            _redoStack.push(_undoStack.pop()).undo();</span>
+<span class="nc" id="L14">            return true;</span>
+            }
+        }
+<span class="nc" id="L17">        catch(EmptyStackException e) {};</span>
+<span class="nc" id="L18">        return result;</span>
+      }
+    };
+<span class="fc" id="L21">  RerunnableCommand _redoCmd = new RerunnableCommand () {</span>
+      public boolean run () {
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        boolean result = !_redoStack.empty();</span>
+        try {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        	if (result) {</span>
+<span class="nc" id="L26">            _undoStack.push(_redoStack.pop()).redo();</span>
+<span class="nc" id="L27">            return true;</span>
+        	}
+        }
+<span class="nc" id="L30">        catch(EmptyStackException e) {};</span>
+<span class="nc" id="L31">        return result;</span>
+      }
+    };
+
+    /**
+     * Add command &lt;code&gt;undoable&lt;/code&gt; and clear &lt;code&gt;redoable&lt;/code&gt;.
+     * @param cmd the command to be run.
+     */
+  public void add(UndoableCommand cmd) {
+    
+<span class="nc" id="L41">	  _undoStack.add(cmd);</span>
+<span class="nc" id="L42">	  _redoStack.clear();</span>
+<span class="nc" id="L43">  }</span>
+  
+  /**
+   * Returns a &lt;code&gt;RerunnableCommand&lt;/code&gt; that, when run does the following:
+   * Pop command from &lt;code&gt;undoable&lt;/code&gt;, undo it, then push it
+   * onto &lt;code&gt;redoable&lt;/code&gt;.
+   * @throws EmptyStackException if there is no undoable command.
+   * 
+   * @return RerunnableCommand inventory after undo
+   */
+  public RerunnableCommand getUndo() {
+<span class="nc" id="L54">    return _undoCmd;</span>
+  }
+  
+  /**
+   * Returns a &lt;code&gt;RerunnableCommand&lt;/code&gt; that, when run does the following:
+   * Pop command from &lt;code&gt;redoable&lt;/code&gt;, redo it, then push it
+   * onto &lt;code&gt;undoable&lt;/code&gt;.
+   * @throws EmptyStackException if there is no redoable command.
+   * 
+   * @return RerunnableCommand inventory after redo
+   */
+  public RerunnableCommand getRedo() {
+<span class="nc" id="L66">    return _redoCmd;</span>
+  }
+  
+  // For testing
+  public UndoableCommand topUndoCommand() {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (_undoStack.empty())</span>
+<span class="nc" id="L72">      return null;</span>
+    else
+<span class="nc" id="L74">      return _undoStack.peek();</span>
+  }
+  // For testing
+  public UndoableCommand topRedoCommand() {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    if (_redoStack.empty())</span>
+<span class="nc" id="L79">      return null;</span>
+    else
+<span class="nc" id="L81">      return _redoStack.peek();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
