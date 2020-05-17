@@ -1,10 +1,18 @@
 package data;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import java.awt.*;
+import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -13,26 +21,70 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 
+
 /**
  * Class to test InventorySet.
  * 
  * @author Stephen Kim
  *
  */
-public class InventoryTest extends TestCase {
-  public InventoryTest(String name) {
-    super(name);
-  }
+public class InventoryTest {
 
-  InventorySet s = new InventorySet();
-  final Video v1 = new VideoObj( "A", 2000, "B" );
-  final Video v1copy = new VideoObj( "A", 2000, "B" );
-  final Video v2 = new VideoObj( "B", 2000, "B" );
-  
-  /**
-   * Function to test size()
-   */
-  
+    private static InventorySet inv;
+    private static Video v1;
+    private static Video v2;
+    private static Video v3;
+
+    @BeforeEach
+    public void startup() {
+        inv = new InventorySet();
+        v1 = new VideoObj("True Romance", 1993, "Quentin Tarantino");
+        v2 = new VideoObj("Fast Times at Ridgemont High", 1982, "Amy Heckerling");
+        v3 = new VideoObj("Coneheads", 1993, "Steve Barron");
+    }
+
+    @ParameterizedTest(name = "Verify size function")
+    @MethodSource("sizeTests")
+    void sizeTest(int a, int b) {
+        assertEquals(a, b);
+    }
+
+    private static Stream<Arguments> sizeTests() {
+        return Stream.of(
+                Arguments.of(10, 10)
+        );
+    }
+
+    @ParameterizedTest(name = "addNumOwned video null exceptions test")
+    @MethodSource("addNumOwnedVideoNullException")
+    void addNumOwnedVideoNullTest(Video video, int change) {
+        assertThrows(NullPointerException.class, () -> inv.addNumOwned(video, change));
+    }
+
+    private static Stream<Arguments> addNumOwnedVideoNullException() {
+        return Stream.of(
+            Arguments.of(null, 10)
+        );
+    }
+
+    @ParameterizedTest(name = "addNumOwned video illegal argument exceptions test")
+    @ValueSource(ints = 0)
+    void addNumOwnedVideoIllegalArgumentExceptionsTest(int change) {
+        inv.addNumOwned(v1, 1);
+        assertThrows(IllegalArgumentException.class, () -> inv.addNumOwned(v1, change));
+    }
+/*
+    @ParameterizedTest(name = "If record is null and change is greater than 0 add video to inventory")
+    @ValueSource(ints = 1)
+    void addNumOwnedRecordNullTest(int change) {
+        inv.addNumOwned(v1, change);
+        assertEquals(v1, inv.get(v1).video());
+    }
+*/
+
+
+    /*
+
   public void testSize() {
                                  assertEquals( 0, s.size() );
           s.addNumOwned(v1,  1); assertEquals( 1, s.size() );
@@ -43,9 +95,7 @@ public class InventoryTest extends TestCase {
     try { s.addNumOwned(v1, -3); fail(); } catch ( IllegalArgumentException e ) {}
   }
 
-  /**
-   * Function to test addNumOwned()8
-   */
+
   
 public void testAddNumOwned() {
                                   assertEquals( null, s.get(v1) );
@@ -65,9 +115,7 @@ public void testAddNumOwned() {
     try { s.addNumOwned(null, 1);   fail(); } catch ( IllegalArgumentException e ) {}
   }
 
-  /**
-   * Function to test checkIn() and checkOut()
-   */
+
   public void testCheckOutCheckIn() {
     try { s.checkOut(null);     fail(); } catch ( IllegalArgumentException e ) {}
     try { s.checkIn(null);      fail(); } catch ( IllegalArgumentException e ) {}
@@ -86,9 +134,7 @@ public void testAddNumOwned() {
           s.checkOut(v1);       assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 3 );
   }
 
-  /**
-   * Function to test clear()
-   */
+
   public void testClear() {
           s.addNumOwned(v1, 2); assertEquals( 1, s.size() );
           s.addNumOwned(v2, 2); assertEquals( 2, s.size() );
@@ -96,9 +142,7 @@ public void testAddNumOwned() {
     try { s.checkOut(v2);       fail(); } catch ( IllegalArgumentException e ) {}
   }
 
-  /**
-   * Function to test get()
-   */
+
   public void testGet() {
     s.addNumOwned(v1, 1);
     Record r1 = s.get(v1);
@@ -111,9 +155,7 @@ public void testAddNumOwned() {
   }
   
 
-  /**
-   * Function to test iterator()
-   */
+
   public void testIterator1() {
     Set<Video> expected = new HashSet<Video>();
     InventorySet inv = new InventorySet();
@@ -135,9 +177,7 @@ public void testAddNumOwned() {
     assertTrue(expected.isEmpty());
   }
   
-  /**
-   * Function to test iterator with comparator
-   */
+
   public void testIterator2() {
     List<Video> expected = new ArrayList<Video>();
     InventorySet inv = new InventorySet();
@@ -163,5 +203,5 @@ public void testAddNumOwned() {
     }
     assertTrue(expected.isEmpty());
   }
-
+*/
 }
