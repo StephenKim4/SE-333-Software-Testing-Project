@@ -50,11 +50,11 @@ final class InventorySet implements Inventory {
 <span class="nc" id="L50">  }</span>
 
   public int size() {
-<span class="nc" id="L53">    return _data.size();</span>
+<span class="fc" id="L53">    return _data.size();</span>
   }
 
   public Record get(Video v) {
-<span class="nc" id="L57">    return _data.get(v);</span>
+<span class="fc" id="L57">    return _data.get(v);</span>
   }
 
   public Iterator&lt;Record&gt; iterator() {
@@ -89,16 +89,16 @@ final class InventorySet implements Inventory {
 <span class="fc bfc" id="L89" title="All 2 branches covered.">    if (change == 0)</span>
 <span class="fc" id="L90">      throw new IllegalArgumentException();</span>
 <span class="fc" id="L91">    RecordObj r = (RecordObj) _data.get(video);</span>
-<span class="pc bpc" id="L92" title="2 of 4 branches missed.">    if (r == null &amp;&amp; change &lt; 1) {</span>
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">    if (r == null &amp;&amp; change &lt; 1) {</span>
 <span class="nc" id="L93">      throw new IllegalArgumentException();</span>
-<span class="pc bpc" id="L94" title="1 of 2 branches missed.">    } else if (r == null) {</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">    } else if (r == null) {</span>
 <span class="fc" id="L95">      _data.put(video, new RecordObj(video, change, 0, 0));</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">    } else if (r.numOwned+change &lt; r.numOut) {</span>
-<span class="nc" id="L97">      throw new IllegalArgumentException();</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">    } else if (r.numOwned+change &lt; 1) {</span>
-<span class="nc" id="L99">      _data.remove(video);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    } else if (r.numOwned+change &lt; r.numOut) {</span>
+<span class="fc" id="L97">      throw new IllegalArgumentException();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    } else if (r.numOwned+change &lt; 1) {</span>
+<span class="fc" id="L99">      _data.remove(video);</span>
     } else {
-<span class="nc" id="L101">      _data.put(video, new RecordObj(video, r.numOwned + change, r.numOut, r.numRentals));</span>
+<span class="fc" id="L101">      _data.put(video, new RecordObj(video, r.numOwned + change, r.numOut, r.numRentals));</span>
     }
 <span class="fc" id="L103">    return r;</span>
   }
@@ -154,13 +154,13 @@ final class InventorySet implements Inventory {
    */
   Map clear() {
 	  
-<span class="nc" id="L157">	Map&lt;Video, Record&gt; newMap = new HashMap&lt;Video, Record&gt;();</span>
+<span class="fc" id="L157">	Map&lt;Video, Record&gt; newMap = new HashMap&lt;Video, Record&gt;();</span>
 	
-<span class="nc" id="L159">	newMap.putAll(_data);</span>
+<span class="fc" id="L159">	newMap.putAll(_data);</span>
 	
-<span class="nc" id="L161">    _data.clear();</span>
+<span class="fc" id="L161">    _data.clear();</span>
     
-<span class="nc" id="L163">	return newMap;</span>
+<span class="fc" id="L163">	return newMap;</span>
   }
 
   /**
@@ -212,10 +212,10 @@ final class InventorySet implements Inventory {
 <span class="nc" id="L212">      return new RecordObj(video, numOwned, numOut, numRentals);</span>
     }
     public Video video() {
-<span class="nc" id="L215">      return video;</span>
+<span class="fc" id="L215">      return video;</span>
     }
     public int numOwned() {
-<span class="nc" id="L218">      return numOwned;</span>
+<span class="fc" id="L218">      return numOwned;</span>
     }
     public int numOut() {
 <span class="nc" id="L221">      return numOut;</span>
