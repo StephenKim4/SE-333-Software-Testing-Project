@@ -17,14 +17,14 @@ public class VideoObj implements Video {
 	 * @param director    director
 	 */
 <span class="fc" id="L19">	public VideoObj(String title, int year, String director) {</span>
-<span class="pc bpc" id="L20" title="3 of 6 branches missed.">		if (title == null || title == &quot;&quot; || title == &quot; &quot;)</span>
-<span class="nc" id="L21">			throw new IllegalArgumentException(&quot;Title must be non-null, have no leading or &quot;</span>
+<span class="fc bfc" id="L20" title="All 6 branches covered.">		if (title == null || title == &quot;&quot; || title == &quot; &quot;)</span>
+<span class="fc" id="L21">			throw new IllegalArgumentException(&quot;Title must be non-null, have no leading or &quot;</span>
 					+ &quot;final spaces, and not be an empty string&quot;);
-<span class="pc bpc" id="L23" title="3 of 6 branches missed.">		if (director == null || director == &quot;&quot; || director == &quot; &quot;)</span>
-<span class="nc" id="L24">			throw new IllegalArgumentException(&quot;Director must be non-null, have no leading or &quot;</span>
+<span class="fc bfc" id="L23" title="All 6 branches covered.">		if (director == null || director == &quot;&quot; || director == &quot; &quot;)</span>
+<span class="fc" id="L24">			throw new IllegalArgumentException(&quot;Director must be non-null, have no leading or &quot;</span>
 					+ &quot;final spaces, and not be an empty string&quot;);
-<span class="pc bpc" id="L26" title="2 of 4 branches missed.">		if (year &lt;= 1800 || year &gt;= 5000)</span>
-<span class="nc" id="L27">			throw new IllegalArgumentException(&quot;Year must be greater than 1800 or less than 5000&quot;);</span>
+<span class="fc bfc" id="L26" title="All 4 branches covered.">		if (year &lt;= 1800 || year &gt;= 5000)</span>
+<span class="fc" id="L27">			throw new IllegalArgumentException(&quot;Year must be greater than 1800 or less than 5000&quot;);</span>
 <span class="fc" id="L28">		_title = title;</span>
 <span class="fc" id="L29">		_director = director;</span>
 <span class="fc" id="L30">		_year = year;</span>
