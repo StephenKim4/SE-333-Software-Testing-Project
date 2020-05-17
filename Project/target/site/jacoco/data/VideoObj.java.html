@@ -4,7 +4,7 @@
  * Implementation of Video interface.
  * @see Data
  */
-public class VideoObj implements Video {
+final class VideoObj implements Video {
 	private final String _title;
 	private final int    _year;
 	private final String _director;
@@ -57,31 +57,23 @@ public class VideoObj implements Video {
 	public boolean equals(Object thatObject) {
 
 		//If object is null return false
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">		if (thatObject == null) return false;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (thatObject == null)</span>
+<span class="fc" id="L61">			throw new NullPointerException(&quot;Null Object&quot;);</span>
 
 		//If object is not instance of videoobj return false
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj)) return false;</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj)) return false;</span>
 
 		//If object is the same then true
-<span class="fc bfc" id="L66" title="All 2 branches covered.">		if (thatObject == this) return true;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (thatObject == this) return true;</span>
 
 		//Create instance of object
-<span class="fc" id="L69">		VideoObj v = (VideoObj) thatObject;</span>
+<span class="fc" id="L70">		VideoObj v = (VideoObj) thatObject;</span>
 
 		//Check equality of parameters if video not in hashmap		  
-<span class="pc bpc" id="L72" title="3 of 6 branches missed.">		if (this._director.equals(v._director) &amp;&amp; this._year == v._year &amp;&amp; this._title.equals(v._title)) {</span>
-<span class="fc" id="L73">			return true;</span>
+<span class="fc bfc" id="L73" title="All 6 branches covered.">		if (this._director.equals(v._director) &amp;&amp; this._year == v._year &amp;&amp; this._title.equals(v._title)) {</span>
+<span class="fc" id="L74">			return true;</span>
 		}
-
-		//Hash consing
-<span class="nc bnc" id="L77" title="All 2 branches missed.">		if (v.equals(Data.bag.get(v))){</span>
-<span class="nc" id="L78">			 System.out.println(&quot;This record already exists. Increasing the number of records available.&quot;);</span>
-<span class="nc" id="L79">			 Data.bag.put(v, v);</span>
-<span class="nc" id="L80">			 return true;</span>
-		 }
-		 else {
-<span class="nc" id="L83">		 return false;</span>
-		 }
+<span class="fc" id="L76">		return false;</span>
 
 	}
 
@@ -89,11 +81,11 @@ public class VideoObj implements Video {
 	 * Hashcode
 	 */
 	public int hashCode() {
-<span class="fc" id="L92">		int result = 17;</span>
-<span class="fc" id="L93">		result = 37 * result + this._title.hashCode();</span>
-<span class="fc" id="L94">		result = 37 * result + this._year;</span>
-<span class="fc" id="L95">		result = 37 * result + this._director.hashCode();</span>
-<span class="fc" id="L96">		return result;</span>
+<span class="fc" id="L84">		int result = 17;</span>
+<span class="fc" id="L85">		result = 37 * result + this._title.hashCode();</span>
+<span class="fc" id="L86">		result = 37 * result + this._year;</span>
+<span class="fc" id="L87">		result = 37 * result + this._director.hashCode();</span>
+<span class="fc" id="L88">		return result;</span>
 	}
 
 	/**
@@ -101,35 +93,35 @@ public class VideoObj implements Video {
 	 */
 	public int compareTo(Object thatObject) {
 
-<span class="nc" id="L104">		VideoObj v = (VideoObj) thatObject;</span>
+<span class="fc" id="L96">		VideoObj v = (VideoObj) thatObject;</span>
 
-<span class="nc bnc" id="L106" title="All 4 branches missed.">		if (thatObject == null &amp;&amp; this != null)</span>
-<span class="nc" id="L107">			throw new NullPointerException();</span>
+<span class="pc bpc" id="L98" title="1 of 4 branches missed.">		if (thatObject == null &amp;&amp; this != null)</span>
+<span class="fc" id="L99">			throw new NullPointerException();</span>
 
-<span class="nc bnc" id="L109" title="All 2 branches missed.">		if (!(thatObject instanceof VideoObj))</span>
-<span class="nc" id="L110">			throw new ClassCastException(&quot;Object is incompatible type&quot;);</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj))</span>
+<span class="nc" id="L102">			throw new ClassCastException(&quot;Object is incompatible type&quot;);</span>
 
 		// Compare titles
-<span class="nc" id="L113">		int titleDiff = this._title.compareTo(v._title);</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (titleDiff != 0) return titleDiff;</span>
+<span class="fc" id="L105">		int titleDiff = this._title.compareTo(v._title);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if (titleDiff != 0) return titleDiff;</span>
 
 		// Compare years
-<span class="nc" id="L117">		int yearDiff = this._year - v._year;</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (yearDiff != 0) return yearDiff; </span>
+<span class="fc" id="L109">		int yearDiff = this._year - v._year;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		if (yearDiff != 0) return yearDiff; </span>
 
 		// Compare directors
-<span class="nc" id="L121">		int dirDiff = this._director.compareTo(v._director);</span>
-<span class="nc bnc" id="L122" title="All 2 branches missed.">		if (dirDiff != 0) return dirDiff;</span>
+<span class="fc" id="L113">		int dirDiff = this._director.compareTo(v._director);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (dirDiff != 0) return dirDiff;</span>
 
-<span class="nc" id="L124">		return 0; //All fields are equal</span>
+<span class="fc" id="L116">		return 0; //All fields are equal</span>
 	}
 
 	/**
 	 * Return string version
 	 */
 	public String toString() {
-<span class="nc" id="L131">		String video = String.format(&quot;%s (%d) : %s&quot;, this._title, this._year, this._director);</span>
-<span class="nc" id="L132">		return video.trim(); </span>
+<span class="fc" id="L123">		String video = String.format(&quot;%s (%d) : %s&quot;, this._title, this._year, this._director);</span>
+<span class="fc" id="L124">		return video.trim(); </span>
 
 	}
 }
