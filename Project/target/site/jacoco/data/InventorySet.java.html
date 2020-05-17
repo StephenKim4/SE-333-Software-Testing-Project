@@ -50,24 +50,24 @@ final class InventorySet implements Inventory {
 <span class="nc" id="L50">  }</span>
 
   public int size() {
-<span class="fc" id="L53">    return _data.size();</span>
+<span class="nc" id="L53">    return _data.size();</span>
   }
 
   public Record get(Video v) {
-<span class="fc" id="L57">    return _data.get(v);</span>
+<span class="nc" id="L57">    return _data.get(v);</span>
   }
 
   public Iterator&lt;Record&gt; iterator() {
-<span class="fc" id="L61">    return Collections.unmodifiableCollection(_data.values()).iterator();</span>
+<span class="nc" id="L61">    return Collections.unmodifiableCollection(_data.values()).iterator();</span>
   }
 
   public Iterator&lt;Record&gt; iterator(Comparator&lt;Record&gt; comparator) {
     
-<span class="fc" id="L66">	  List&lt;Record&gt; l = new ArrayList&lt;Record&gt;(_data.values());</span>
-<span class="fc" id="L67">	  l.sort(comparator);</span>
+<span class="nc" id="L66">	  List&lt;Record&gt; l = new ArrayList&lt;Record&gt;(_data.values());</span>
+<span class="nc" id="L67">	  l.sort(comparator);</span>
 	  //Collections.sort(l, comparator);
 	  
-<span class="fc" id="L70">	  return Collections.unmodifiableCollection(l).iterator();</span>
+<span class="nc" id="L70">	  return Collections.unmodifiableCollection(l).iterator();</span>
   }
 
   /**
@@ -84,22 +84,23 @@ final class InventorySet implements Inventory {
    * @throws IllegalArgumentException if video null or change is zero
    */
   Record addNumOwned(Video video, int change) {
-<span class="pc bpc" id="L87" title="1 of 4 branches missed.">    if (video == null || change == 0)</span>
-<span class="fc" id="L88">      throw new IllegalArgumentException();</span>
-    
-<span class="fc" id="L90">    RecordObj r = (RecordObj) _data.get(video);</span>
-<span class="fc bfc" id="L91" title="All 4 branches covered.">    if (r == null &amp;&amp; change &lt; 1) {</span>
-<span class="fc" id="L92">      throw new IllegalArgumentException();</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">    } else if (r == null) {</span>
-<span class="fc" id="L94">      _data.put(video, new RecordObj(video, change, 0, 0));</span>
-<span class="fc bfc" id="L95" title="All 2 branches covered.">    } else if (r.numOwned+change &lt; r.numOut) {</span>
-<span class="fc" id="L96">      throw new IllegalArgumentException();</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">    } else if (r.numOwned+change &lt; 1) {</span>
-<span class="fc" id="L98">      _data.remove(video);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (video == null)</span>
+<span class="fc" id="L88">      throw new NullPointerException();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (change == 0)</span>
+<span class="fc" id="L90">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L91">    RecordObj r = (RecordObj) _data.get(video);</span>
+<span class="pc bpc" id="L92" title="2 of 4 branches missed.">    if (r == null &amp;&amp; change &lt; 1) {</span>
+<span class="nc" id="L93">      throw new IllegalArgumentException();</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">    } else if (r == null) {</span>
+<span class="fc" id="L95">      _data.put(video, new RecordObj(video, change, 0, 0));</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">    } else if (r.numOwned+change &lt; r.numOut) {</span>
+<span class="nc" id="L97">      throw new IllegalArgumentException();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    } else if (r.numOwned+change &lt; 1) {</span>
+<span class="nc" id="L99">      _data.remove(video);</span>
     } else {
-<span class="fc" id="L100">      _data.put(video, new RecordObj(video, r.numOwned + change, r.numOut, r.numRentals));</span>
+<span class="nc" id="L101">      _data.put(video, new RecordObj(video, r.numOwned + change, r.numOut, r.numRentals));</span>
     }
-<span class="fc" id="L102">    return r;</span>
+<span class="fc" id="L103">    return r;</span>
   }
 
   /**
@@ -111,17 +112,17 @@ final class InventorySet implements Inventory {
    */
   Record checkOut(Video video) {
     
-<span class="fc bfc" id="L114" title="All 2 branches covered.">	  if (!_data.containsKey(video)) {</span>
-<span class="fc" id="L115">	    	throw new IllegalArgumentException(&quot;Video has no record&quot;);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">	  if (!_data.containsKey(video)) {</span>
+<span class="nc" id="L116">	    	throw new IllegalArgumentException(&quot;Video has no record&quot;);</span>
 	    }
-<span class="fc bfc" id="L117" title="All 2 branches covered.">	    if (_data.get(video).numOut() == _data.get(video).numOwned() ) {</span>
-<span class="fc" id="L118">	    	throw new IllegalArgumentException(&quot;All videos are checked out&quot;);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">	    if (_data.get(video).numOut() == _data.get(video).numOwned() ) {</span>
+<span class="nc" id="L119">	    	throw new IllegalArgumentException(&quot;All videos are checked out&quot;);</span>
 	    }
-<span class="fc" id="L120">	Record c = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut(), _data.get(video).numRentals());    </span>
-<span class="fc" id="L121">  	Record r = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut() + 1, _data.get(video).numRentals() + 1);</span>
-<span class="fc" id="L122">  	_data.replace(video, r);</span>
+<span class="nc" id="L121">	Record c = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut(), _data.get(video).numRentals());    </span>
+<span class="nc" id="L122">  	Record r = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut() + 1, _data.get(video).numRentals() + 1);</span>
+<span class="nc" id="L123">  	_data.replace(video, r);</span>
 	
-<span class="fc" id="L124">  	return c;</span>
+<span class="nc" id="L125">  	return c;</span>
   }
   
   /**
@@ -133,18 +134,18 @@ final class InventorySet implements Inventory {
    */
   Record checkIn(Video video) {
 	  
-<span class="fc bfc" id="L136" title="All 2 branches covered.">	  if (!_data.containsKey(video)) {</span>
-<span class="fc" id="L137">		  	throw new IllegalArgumentException(&quot;Video has no record&quot;);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">	  if (!_data.containsKey(video)) {</span>
+<span class="nc" id="L138">		  	throw new IllegalArgumentException(&quot;Video has no record&quot;);</span>
 		  }
-<span class="fc bfc" id="L139" title="All 2 branches covered.">		  if (_data.get(video).numOut() &lt; 1 ) {</span>
-<span class="fc" id="L140">		   	throw new IllegalArgumentException(&quot;There are no videos checked out&quot;);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">		  if (_data.get(video).numOut() &lt; 1 ) {</span>
+<span class="nc" id="L141">		   	throw new IllegalArgumentException(&quot;There are no videos checked out&quot;);</span>
 		  }
 		  
-<span class="fc" id="L143">      Record c = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut(), _data.get(video).numRentals());    </span>
-<span class="fc" id="L144">	  Record r = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut() - 1, _data.get(video).numRentals());</span>
-<span class="fc" id="L145">	  _data.replace(video, r);</span>
+<span class="nc" id="L144">      Record c = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut(), _data.get(video).numRentals());    </span>
+<span class="nc" id="L145">	  Record r = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut() - 1, _data.get(video).numRentals());</span>
+<span class="nc" id="L146">	  _data.replace(video, r);</span>
 	  
-<span class="fc" id="L147">	  return c;</span>
+<span class="nc" id="L148">	  return c;</span>
   }
   
   /**
@@ -153,13 +154,13 @@ final class InventorySet implements Inventory {
    */
   Map clear() {
 	  
-<span class="fc" id="L156">	Map&lt;Video, Record&gt; newMap = new HashMap&lt;Video, Record&gt;();</span>
+<span class="nc" id="L157">	Map&lt;Video, Record&gt; newMap = new HashMap&lt;Video, Record&gt;();</span>
 	
-<span class="fc" id="L158">	newMap.putAll(_data);</span>
+<span class="nc" id="L159">	newMap.putAll(_data);</span>
 	
-<span class="fc" id="L160">    _data.clear();</span>
+<span class="nc" id="L161">    _data.clear();</span>
     
-<span class="fc" id="L162">	return newMap;</span>
+<span class="nc" id="L163">	return newMap;</span>
   }
 
   /**
@@ -169,19 +170,19 @@ final class InventorySet implements Inventory {
    */
   CommandHistory getHistory() {
      
-<span class="nc" id="L172">    return _history;</span>
+<span class="nc" id="L173">    return _history;</span>
   }
   
   public String toString() {
-<span class="nc" id="L176">    StringBuffer buffer = new StringBuffer();</span>
-<span class="nc" id="L177">    buffer.append(&quot;Database:\n&quot;);</span>
-<span class="nc" id="L178">    Iterator i = _data.values().iterator();</span>
-<span class="nc bnc" id="L179" title="All 2 branches missed.">    while (i.hasNext()) {</span>
-<span class="nc" id="L180">      buffer.append(&quot;  &quot;);</span>
-<span class="nc" id="L181">      buffer.append(i.next());</span>
-<span class="nc" id="L182">      buffer.append(&quot;\n&quot;);</span>
+<span class="nc" id="L177">    StringBuffer buffer = new StringBuffer();</span>
+<span class="nc" id="L178">    buffer.append(&quot;Database:\n&quot;);</span>
+<span class="nc" id="L179">    Iterator i = _data.values().iterator();</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    while (i.hasNext()) {</span>
+<span class="nc" id="L181">      buffer.append(&quot;  &quot;);</span>
+<span class="nc" id="L182">      buffer.append(i.next());</span>
+<span class="nc" id="L183">      buffer.append(&quot;\n&quot;);</span>
     }
-<span class="nc" id="L184">    return buffer.toString();</span>
+<span class="nc" id="L185">    return buffer.toString();</span>
   }
 
 
@@ -201,44 +202,44 @@ final class InventorySet implements Inventory {
     int numOut;     // copies currently rented
     int numRentals; // total times video has been rented
     
-<span class="fc" id="L204">    RecordObj(Video video, int numOwned, int numOut, int numRentals) {</span>
-<span class="fc" id="L205">      this.video = video;</span>
-<span class="fc" id="L206">      this.numOwned = numOwned;</span>
-<span class="fc" id="L207">      this.numOut = numOut;</span>
-<span class="fc" id="L208">      this.numRentals = numRentals;</span>
-<span class="fc" id="L209">    }</span>
+<span class="fc" id="L205">    RecordObj(Video video, int numOwned, int numOut, int numRentals) {</span>
+<span class="fc" id="L206">      this.video = video;</span>
+<span class="fc" id="L207">      this.numOwned = numOwned;</span>
+<span class="fc" id="L208">      this.numOut = numOut;</span>
+<span class="fc" id="L209">      this.numRentals = numRentals;</span>
+<span class="fc" id="L210">    }</span>
     RecordObj copy() {
-<span class="nc" id="L211">      return new RecordObj(video, numOwned, numOut, numRentals);</span>
+<span class="nc" id="L212">      return new RecordObj(video, numOwned, numOut, numRentals);</span>
     }
     public Video video() {
-<span class="fc" id="L214">      return video;</span>
+<span class="nc" id="L215">      return video;</span>
     }
     public int numOwned() {
-<span class="fc" id="L217">      return numOwned;</span>
+<span class="nc" id="L218">      return numOwned;</span>
     }
     public int numOut() {
-<span class="fc" id="L220">      return numOut;</span>
+<span class="nc" id="L221">      return numOut;</span>
     }
     public int numRentals() {
-<span class="fc" id="L223">      return numRentals;</span>
+<span class="nc" id="L224">      return numRentals;</span>
     }
     public boolean equals(Object thatObject) {
-<span class="fc" id="L226">      return video.equals(((Record)thatObject).video());</span>
+<span class="nc" id="L227">      return video.equals(((Record)thatObject).video());</span>
     }
     public int hashCode() {
-<span class="nc" id="L229">      return video.hashCode();</span>
+<span class="nc" id="L230">      return video.hashCode();</span>
     }
     public String toString() {
-<span class="nc" id="L232">      StringBuffer buffer = new StringBuffer();</span>
-<span class="nc" id="L233">      buffer.append(video);</span>
-<span class="nc" id="L234">      buffer.append(&quot; [&quot;);</span>
-<span class="nc" id="L235">      buffer.append(numOwned);</span>
-<span class="nc" id="L236">      buffer.append(&quot;,&quot;);</span>
-<span class="nc" id="L237">      buffer.append(numOut);</span>
-<span class="nc" id="L238">      buffer.append(&quot;,&quot;);</span>
-<span class="nc" id="L239">      buffer.append(numRentals);</span>
-<span class="nc" id="L240">      buffer.append(&quot;]&quot;);</span>
-<span class="nc" id="L241">      return buffer.toString();</span>
+<span class="nc" id="L233">      StringBuffer buffer = new StringBuffer();</span>
+<span class="nc" id="L234">      buffer.append(video);</span>
+<span class="nc" id="L235">      buffer.append(&quot; [&quot;);</span>
+<span class="nc" id="L236">      buffer.append(numOwned);</span>
+<span class="nc" id="L237">      buffer.append(&quot;,&quot;);</span>
+<span class="nc" id="L238">      buffer.append(numOut);</span>
+<span class="nc" id="L239">      buffer.append(&quot;,&quot;);</span>
+<span class="nc" id="L240">      buffer.append(numRentals);</span>
+<span class="nc" id="L241">      buffer.append(&quot;]&quot;);</span>
+<span class="nc" id="L242">      return buffer.toString();</span>
     }
   }
 }
