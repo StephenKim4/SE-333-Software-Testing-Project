@@ -43,18 +43,6 @@ public class InventoryTest {
         v3 = new VideoObj("Coneheads", 1993, "Steve Barron");
     }
 
-    @ParameterizedTest(name = "Verify size function")
-    @MethodSource("sizeTests")
-    void sizeTest(int a, int b) {
-        assertEquals(a, b);
-    }
-
-    private static Stream<Arguments> sizeTests() {
-        return Stream.of(
-                Arguments.of(10, 10)
-        );
-    }
-
     @ParameterizedTest(name = "addNumOwned video null exceptions test")
     @MethodSource("addNumOwnedVideoNullException")
     void addNumOwnedVideoNullTest(Video video, int change) {
@@ -68,52 +56,73 @@ public class InventoryTest {
     }
 
     @ParameterizedTest(name = "addNumOwned video illegal argument exceptions test")
-    @ValueSource(ints = 0)
+    @ValueSource(ints = {0, -2})
     void addNumOwnedVideoIllegalArgumentExceptionsTest(int change) {
         inv.addNumOwned(v1, 1);
         assertThrows(IllegalArgumentException.class, () -> inv.addNumOwned(v1, change));
     }
-/*
+
     @ParameterizedTest(name = "If record is null and change is greater than 0 add video to inventory")
     @ValueSource(ints = 1)
     void addNumOwnedRecordNullTest(int change) {
         inv.addNumOwned(v1, change);
-        assertEquals(v1, inv.get(v1).video());
+        Video v = new VideoObj("True Romance", 1993, "Quentin Tarantino");
+        assertEquals(v, inv.get(v1).video());
     }
-*/
 
+    @ParameterizedTest(name = "addNumOwned test if record is not not null and no exceptions")
+    @MethodSource("addNumOwnedTests")
+    void addNumOwnedTests(int change, int expected) {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v1, change);
+        assertEquals(expected,inv.get(v1).numOwned());
+    }
 
+    private static Stream<Arguments> addNumOwnedTests() {
+        return Stream.of(
+                Arguments.of(1, 11),
+                Arguments.of(101, 111),
+                Arguments.of(-1, 9),
+                Arguments.of(-8, 2)
+        );
+    }
+
+    @Test
+    @DisplayName("addNumOwned test if change is negative and numowned becomes 0, remove video from inventoryset")
+    void addNumOwnedRemoveVideoTest() {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v1, -10);
+        assertEquals(null, inv.get(v1));
+    }
+
+    @ParameterizedTest(name = "Verify size function")
+    @MethodSource("sizeTests")
+    void sizeTest(int initialV1, int changeV1, int initialV2, int changeV2, int expected) {
+        inv.addNumOwned(v1, initialV1);
+        inv.addNumOwned(v1, changeV1);
+        inv.addNumOwned(v2, initialV2);
+        inv.addNumOwned(v2, changeV2);
+        assertEquals(expected, inv.size());
+    }
+
+    private static Stream<Arguments> sizeTests() {
+        return Stream.of(
+                Arguments.of(1, 1, 1, 1, 2),
+                Arguments.of(1, 200, 200, 1, 2),
+                Arguments.of(5, 5, 5, -5, 1)
+        );
+    }
+
+    @Test
+    @DisplayName("Clear removes all of the videos from inventoryset")
+    void clearTest() {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v2, 20);
+        inv.addNumOwned(v3, 40);
+        inv.clear();
+        assertEquals(0, inv.size());
+    }
     /*
-
-  public void testSize() {
-                                 assertEquals( 0, s.size() );
-          s.addNumOwned(v1,  1); assertEquals( 1, s.size() );
-          s.addNumOwned(v1,  2); assertEquals( 1, s.size() );
-          s.addNumOwned(v2,  1); assertEquals( 2, s.size() );
-          s.addNumOwned(v2, -1); assertEquals( 1, s.size() );
-         s.addNumOwned(v1, -3); assertEquals( 0, s.size() );
-    try { s.addNumOwned(v1, -3); fail(); } catch ( IllegalArgumentException e ) {}
-  }
-
-
-  
-public void testAddNumOwned() {
-                                  assertEquals( null, s.get(v1) );
-          s.addNumOwned(v1, 1);     assertEquals( v1, s.get(v1).video() );
-                                    assertEquals( 1, s.get(v1).numOwned());
-          s.addNumOwned(v1, 2);     assertEquals( 3, s.get(v1).numOwned());
-          s.addNumOwned(v1, -1);    assertEquals( 2, s.get(v1).numOwned());
-          int a = s.get(v1).numOwned();
-          
-          s.addNumOwned(v2, 1);     assertEquals( 2, s.get(v1).numOwned());
-          int b = s.get(v1).numOwned();
-          ;
-          s.addNumOwned(v1copy, 1); assertEquals( 3, s.get(v1).numOwned());
-          int c = s.get(v1).numOwned();
-          
-          s.addNumOwned(v1, -3);    assertEquals( null, s.get(v1) );
-    try { s.addNumOwned(null, 1);   fail(); } catch ( IllegalArgumentException e ) {}
-  }
 
 
   public void testCheckOutCheckIn() {
@@ -132,14 +141,6 @@ public void testAddNumOwned() {
     try { s.checkIn(v1);        fail(); } catch ( IllegalArgumentException e ) {}
     try { s.checkOut(v2);       fail(); } catch ( IllegalArgumentException e ) {}
           s.checkOut(v1);       assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 3 );
-  }
-
-
-  public void testClear() {
-          s.addNumOwned(v1, 2); assertEquals( 1, s.size() );
-          s.addNumOwned(v2, 2); assertEquals( 2, s.size() );
-          s.clear();            assertEquals( 0, s.size() );
-    try { s.checkOut(v2);       fail(); } catch ( IllegalArgumentException e ) {}
   }
 
 
