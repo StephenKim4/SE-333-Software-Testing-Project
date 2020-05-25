@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VideoObj.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project</a> &gt; <a href="index.source.html" class="el_package">data</a> &gt; <span class="el_source">VideoObj.java</span></div><h1>VideoObj.java</h1><pre class="source lang-java linenums">package data;
+
+/**
+ * Implementation of Video interface.
+ * @see Data
+ */
+final class VideoObj implements Video {
+	private final String _title;
+	private final int    _year;
+	private final String _director;
+
+	/**
+	 * Initialize all object attributes.
+	 * 
+	 * @param title       title
+	 * @param year        year
+	 * @param director    director
+	 */
+<span class="fc" id="L19">	public VideoObj(String title, int year, String director) {</span>
+<span class="fc bfc" id="L20" title="All 6 branches covered.">		if (title == null || title == &quot;&quot; || title == &quot; &quot;)</span>
+<span class="fc" id="L21">			throw new IllegalArgumentException(&quot;Title must be non-null, have no leading or &quot;</span>
+					+ &quot;final spaces, and not be an empty string&quot;);
+<span class="fc bfc" id="L23" title="All 6 branches covered.">		if (director == null || director == &quot;&quot; || director == &quot; &quot;)</span>
+<span class="fc" id="L24">			throw new IllegalArgumentException(&quot;Director must be non-null, have no leading or &quot;</span>
+					+ &quot;final spaces, and not be an empty string&quot;);
+<span class="fc bfc" id="L26" title="All 4 branches covered.">		if (year &lt;= 1800 || year &gt;= 5000)</span>
+<span class="fc" id="L27">			throw new IllegalArgumentException(&quot;Year must be greater than 1800 or less than 5000&quot;);</span>
+<span class="fc" id="L28">		_title = title;</span>
+<span class="fc" id="L29">		_director = director;</span>
+<span class="fc" id="L30">		_year = year;</span>
+<span class="fc" id="L31">	}</span>
+
+	/**
+	 * Return director
+	 */
+	public String director() {
+<span class="fc" id="L37">		return _director;</span>
+	}
+
+	/**
+	 * Return title
+	 */
+	public String title() {
+<span class="fc" id="L44">		return _title;</span>
+	}
+
+	/**
+	 * Return year
+	 */
+	public int year() {
+<span class="fc" id="L51">		return _year;</span>
+	}
+
+	/**
+	 * Return true if objects are equal, otherwise return false
+	 */
+	public boolean equals(Object thatObject) {
+
+		//If object is null return false
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if (thatObject == null)</span>
+<span class="fc" id="L61">			throw new NullPointerException(&quot;Null Object&quot;);</span>
+
+		//If object is not instance of videoobj return false
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj)) return false;</span>
+
+		//If object is the same then true
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">		if (thatObject == this) return true;</span>
+
+		//Create instance of object
+<span class="fc" id="L70">		VideoObj v = (VideoObj) thatObject;</span>
+
+		//Check equality of parameters if video not in hashmap		  
+<span class="fc bfc" id="L73" title="All 6 branches covered.">		if (this._director.equals(v._director) &amp;&amp; this._year == v._year &amp;&amp; this._title.equals(v._title)) {</span>
+<span class="fc" id="L74">			return true;</span>
+		}
+<span class="fc" id="L76">		return false;</span>
+
+	}
+
+	/**
+	 * Hashcode
+	 */
+	public int hashCode() {
+<span class="fc" id="L84">		int result = 17;</span>
+<span class="fc" id="L85">		result = 37 * result + this._title.hashCode();</span>
+<span class="fc" id="L86">		result = 37 * result + this._year;</span>
+<span class="fc" id="L87">		result = 37 * result + this._director.hashCode();</span>
+<span class="fc" id="L88">		return result;</span>
+	}
+
+	/**
+	 * Compares two videoobj and returns 0 if equal
+	 */
+	public int compareTo(Object thatObject) {
+
+<span class="fc" id="L96">		VideoObj v = (VideoObj) thatObject;</span>
+
+<span class="pc bpc" id="L98" title="1 of 4 branches missed.">		if (thatObject == null &amp;&amp; this != null)</span>
+<span class="fc" id="L99">			throw new NullPointerException();</span>
+
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj))</span>
+<span class="nc" id="L102">			throw new ClassCastException(&quot;Object is incompatible type&quot;);</span>
+
+		// Compare titles
+<span class="fc" id="L105">		int titleDiff = this._title.compareTo(v._title);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if (titleDiff != 0) return titleDiff;</span>
+
+		// Compare years
+<span class="fc" id="L109">		int yearDiff = this._year - v._year;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		if (yearDiff != 0) return yearDiff; </span>
+
+		// Compare directors
+<span class="fc" id="L113">		int dirDiff = this._director.compareTo(v._director);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (dirDiff != 0) return dirDiff;</span>
+
+<span class="fc" id="L116">		return 0; //All fields are equal</span>
+	}
+
+	/**
+	 * Return string version
+	 */
+	public String toString() {
+<span class="fc" id="L123">		String video = String.format(&quot;%s (%d) : %s&quot;, this._title, this._year, this._director);</span>
+<span class="fc" id="L124">		return video.trim(); </span>
+
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

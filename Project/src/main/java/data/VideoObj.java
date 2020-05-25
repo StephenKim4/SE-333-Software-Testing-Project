@@ -16,7 +16,7 @@ final class VideoObj implements Video {
 	 * @param year        year
 	 * @param director    director
 	 */
-	VideoObj(String title, int year, String director) {
+	public VideoObj(String title, int year, String director) {
 		if (title == null || title == "" || title == " ")
 			throw new IllegalArgumentException("Title must be non-null, have no leading or "
 					+ "final spaces, and not be an empty string");
@@ -57,7 +57,8 @@ final class VideoObj implements Video {
 	public boolean equals(Object thatObject) {
 
 		//If object is null return false
-		if (thatObject == null) return false;
+		if (thatObject == null)
+			throw new NullPointerException("Null Object");
 
 		//If object is not instance of videoobj return false
 		if (!(thatObject instanceof VideoObj)) return false;
@@ -72,16 +73,7 @@ final class VideoObj implements Video {
 		if (this._director.equals(v._director) && this._year == v._year && this._title.equals(v._title)) {
 			return true;
 		}
-
-		//Hash consing
-		if (v.equals(Data.bag.get(v))){
-			 System.out.println("This record already exists. Increasing the number of records available.");
-			 Data.bag.put(v, v);
-			 return true;
-		 }
-		 else {
-		 return false;
-		 }
+		return false;
 
 	}
 

@@ -84,9 +84,10 @@ final class InventorySet implements Inventory {
    * @throws IllegalArgumentException if video null or change is zero
    */
   Record addNumOwned(Video video, int change) {
-    if (video == null || change == 0)
+    if (video == null)
+      throw new NullPointerException();
+    if (change == 0)
       throw new IllegalArgumentException();
-    
     RecordObj r = (RecordObj) _data.get(video);
     if (r == null && change < 1) {
       throw new IllegalArgumentException();

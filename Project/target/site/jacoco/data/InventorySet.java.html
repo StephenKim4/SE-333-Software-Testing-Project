@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InventorySet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project</a> &gt; <a href="index.source.html" class="el_package">data</a> &gt; <span class="el_source">InventorySet.java</span></div><h1>InventorySet.java</h1><pre class="source lang-java linenums">package data;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Comparator;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import command.Command;
+import command.UndoableCommand;
+import command.CommandHistory;
+import command.CommandHistoryFactory;
+
+/**
+ * Implementation of Inventory interface.
+ * @see Data
+ */
+final class InventorySet implements Inventory {
+  private Map&lt;Video,Record&gt; _data;
+  private final CommandHistory _history;
+
+<span class="fc" id="L23">  InventorySet() {</span>
+      
+<span class="fc" id="L25">    _data = new HashMap&lt;Video, Record&gt;();</span>
+<span class="fc" id="L26">    _history = CommandHistoryFactory.newCommandHistory();</span>
+     
+<span class="fc" id="L28">  }</span>
+
+  /**
+   * If &lt;code&gt;record&lt;/code&gt; is null, then delete record for &lt;code&gt;video&lt;/code&gt;;
+   * otherwise replace record for &lt;code&gt;video&lt;/code&gt;.
+   * 
+   * @param video     video 
+   * @param record    record
+   */
+  void replaceEntry(Video video, Record record) {
+<span class="nc" id="L38">    _data.remove(video);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (record != null)</span>
+<span class="nc" id="L40">      _data.put(video,((RecordObj)record).copy());</span>
+<span class="nc" id="L41">  }</span>
+
+  /**
+   * Overwrite the map.
+   * 
+   * @param data inventory map
+   */
+  void replaceMap(Map&lt;Video,Record&gt; data) {
+<span class="nc" id="L49">    _data = data;</span>
+<span class="nc" id="L50">  }</span>
+
+  public int size() {
+<span class="fc" id="L53">    return _data.size();</span>
+  }
+
+  public Record get(Video v) {
+<span class="fc" id="L57">    return _data.get(v);</span>
+  }
+
+  public Iterator&lt;Record&gt; iterator() {
+<span class="nc" id="L61">    return Collections.unmodifiableCollection(_data.values()).iterator();</span>
+  }
+
+  public Iterator&lt;Record&gt; iterator(Comparator&lt;Record&gt; comparator) {
+    
+<span class="nc" id="L66">	  List&lt;Record&gt; l = new ArrayList&lt;Record&gt;(_data.values());</span>
+<span class="nc" id="L67">	  l.sort(comparator);</span>
+	  //Collections.sort(l, comparator);
+	  
+<span class="nc" id="L70">	  return Collections.unmodifiableCollection(l).iterator();</span>
+  }
+
+  /**
+   * Add or remove copies of a video from the inventory.
+   * If a video record is not already present (and change is
+   * positive), a record is created. 
+   * If a record is already present, &lt;code&gt;numOwned&lt;/code&gt; is
+   * modified using &lt;code&gt;change&lt;/code&gt;.
+   * If &lt;code&gt;change&lt;/code&gt; brings the number of copies to be less
+   * than one, the record is removed from the inventory.
+   * @param video the video to be added.
+   * @param change the number of copies to add (or remove if negative).
+   * @return A copy of the previous record for this video (if any)
+   * @throws IllegalArgumentException if video null or change is zero
+   */
+  Record addNumOwned(Video video, int change) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (video == null)</span>
+<span class="fc" id="L88">      throw new NullPointerException();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (change == 0)</span>
+<span class="fc" id="L90">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L91">    RecordObj r = (RecordObj) _data.get(video);</span>
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">    if (r == null &amp;&amp; change &lt; 1) {</span>
+<span class="nc" id="L93">      throw new IllegalArgumentException();</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">    } else if (r == null) {</span>
+<span class="fc" id="L95">      _data.put(video, new RecordObj(video, change, 0, 0));</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    } else if (r.numOwned+change &lt; r.numOut) {</span>
+<span class="fc" id="L97">      throw new IllegalArgumentException();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    } else if (r.numOwned+change &lt; 1) {</span>
+<span class="fc" id="L99">      _data.remove(video);</span>
+    } else {
+<span class="fc" id="L101">      _data.put(video, new RecordObj(video, r.numOwned + change, r.numOut, r.numRentals));</span>
+    }
+<span class="fc" id="L103">    return r;</span>
+  }
+
+  /**
+   * Check out a video.
+   * @param video the video to be checked out.
+   * @return A copy of the previous record for this video
+   * @throws IllegalArgumentException if video has no record or numOut
+   * equals numOwned.
+   */
+  Record checkOut(Video video) {
+    
+<span class="nc bnc" id="L115" title="All 2 branches missed.">	  if (!_data.containsKey(video)) {</span>
+<span class="nc" id="L116">	    	throw new IllegalArgumentException(&quot;Video has no record&quot;);</span>
+	    }
+<span class="nc bnc" id="L118" title="All 2 branches missed.">	    if (_data.get(video).numOut() == _data.get(video).numOwned() ) {</span>
+<span class="nc" id="L119">	    	throw new IllegalArgumentException(&quot;All videos are checked out&quot;);</span>
+	    }
+<span class="nc" id="L121">	Record c = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut(), _data.get(video).numRentals());    </span>
+<span class="nc" id="L122">  	Record r = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut() + 1, _data.get(video).numRentals() + 1);</span>
+<span class="nc" id="L123">  	_data.replace(video, r);</span>
+	
+<span class="nc" id="L125">  	return c;</span>
+  }
+  
+  /**
+   * Check in a video.
+   * @param video the video to be checked in.
+   * @return A copy of the previous record for this video
+   * @throws IllegalArgumentException if video has no record or numOut
+   * non-positive.
+   */
+  Record checkIn(Video video) {
+	  
+<span class="nc bnc" id="L137" title="All 2 branches missed.">	  if (!_data.containsKey(video)) {</span>
+<span class="nc" id="L138">		  	throw new IllegalArgumentException(&quot;Video has no record&quot;);</span>
+		  }
+<span class="nc bnc" id="L140" title="All 2 branches missed.">		  if (_data.get(video).numOut() &lt; 1 ) {</span>
+<span class="nc" id="L141">		   	throw new IllegalArgumentException(&quot;There are no videos checked out&quot;);</span>
+		  }
+		  
+<span class="nc" id="L144">      Record c = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut(), _data.get(video).numRentals());    </span>
+<span class="nc" id="L145">	  Record r = new RecordObj(video, _data.get(video).numOwned(), _data.get(video).numOut() - 1, _data.get(video).numRentals());</span>
+<span class="nc" id="L146">	  _data.replace(video, r);</span>
+	  
+<span class="nc" id="L148">	  return c;</span>
+  }
+  
+  /**
+   * Remove all records from the inventory.
+   * @return A copy of the previous inventory as a Map
+   */
+  Map clear() {
+	  
+<span class="fc" id="L157">	Map&lt;Video, Record&gt; newMap = new HashMap&lt;Video, Record&gt;();</span>
+	
+<span class="fc" id="L159">	newMap.putAll(_data);</span>
+	
+<span class="fc" id="L161">    _data.clear();</span>
+    
+<span class="fc" id="L163">	return newMap;</span>
+  }
+
+  /**
+   * Return a reference to the history.
+   * 
+   * @return CommandHistory history
+   */
+  CommandHistory getHistory() {
+     
+<span class="nc" id="L173">    return _history;</span>
+  }
+  
+  public String toString() {
+<span class="nc" id="L177">    StringBuffer buffer = new StringBuffer();</span>
+<span class="nc" id="L178">    buffer.append(&quot;Database:\n&quot;);</span>
+<span class="nc" id="L179">    Iterator i = _data.values().iterator();</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    while (i.hasNext()) {</span>
+<span class="nc" id="L181">      buffer.append(&quot;  &quot;);</span>
+<span class="nc" id="L182">      buffer.append(i.next());</span>
+<span class="nc" id="L183">      buffer.append(&quot;\n&quot;);</span>
+    }
+<span class="nc" id="L185">    return buffer.toString();</span>
+  }
+
+
+  /**
+   * Implementation of Record interface.
+   *
+   * &lt;p&gt;This is a utility class for Inventory.  Fields are mutable and
+   * package-private.&lt;/p&gt;
+   *
+   * &lt;p&gt;&lt;b&gt;Class Invariant:&lt;/b&gt; No two instances may reference the same Video.&lt;/p&gt;
+   *
+   * @see Record
+   */
+  private static final class RecordObj implements Record {
+    Video video; // the video
+    int numOwned;   // copies owned
+    int numOut;     // copies currently rented
+    int numRentals; // total times video has been rented
+    
+<span class="fc" id="L205">    RecordObj(Video video, int numOwned, int numOut, int numRentals) {</span>
+<span class="fc" id="L206">      this.video = video;</span>
+<span class="fc" id="L207">      this.numOwned = numOwned;</span>
+<span class="fc" id="L208">      this.numOut = numOut;</span>
+<span class="fc" id="L209">      this.numRentals = numRentals;</span>
+<span class="fc" id="L210">    }</span>
+    RecordObj copy() {
+<span class="nc" id="L212">      return new RecordObj(video, numOwned, numOut, numRentals);</span>
+    }
+    public Video video() {
+<span class="fc" id="L215">      return video;</span>
+    }
+    public int numOwned() {
+<span class="fc" id="L218">      return numOwned;</span>
+    }
+    public int numOut() {
+<span class="nc" id="L221">      return numOut;</span>
+    }
+    public int numRentals() {
+<span class="nc" id="L224">      return numRentals;</span>
+    }
+    public boolean equals(Object thatObject) {
+<span class="nc" id="L227">      return video.equals(((Record)thatObject).video());</span>
+    }
+    public int hashCode() {
+<span class="nc" id="L230">      return video.hashCode();</span>
+    }
+    public String toString() {
+<span class="nc" id="L233">      StringBuffer buffer = new StringBuffer();</span>
+<span class="nc" id="L234">      buffer.append(video);</span>
+<span class="nc" id="L235">      buffer.append(&quot; [&quot;);</span>
+<span class="nc" id="L236">      buffer.append(numOwned);</span>
+<span class="nc" id="L237">      buffer.append(&quot;,&quot;);</span>
+<span class="nc" id="L238">      buffer.append(numOut);</span>
+<span class="nc" id="L239">      buffer.append(&quot;,&quot;);</span>
+<span class="nc" id="L240">      buffer.append(numRentals);</span>
+<span class="nc" id="L241">      buffer.append(&quot;]&quot;);</span>
+<span class="nc" id="L242">      return buffer.toString();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

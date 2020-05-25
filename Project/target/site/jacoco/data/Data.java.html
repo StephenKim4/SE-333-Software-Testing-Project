@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Data.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project</a> &gt; <a href="index.source.html" class="el_package">data</a> &gt; <span class="el_source">Data.java</span></div><h1>Data.java</h1><pre class="source lang-java linenums">package data;
+
+import java.util.HashMap;
+import java.util.WeakHashMap;
+
+import command.RerunnableCommand;
+import command.UndoableCommand;
+
+/**
+ * A static class for accessing data objects.
+ */
+public class Data {
+	
+  private Data() {}
+  
+  
+  /**
+   * Returns a new Inventory.
+   * 
+   * @return InventorySet new inventory set
+   */
+  static public final Inventory newInventory() {
+<span class="nc" id="L23">    return new InventorySet();</span>
+  }
+  
+  //Create bag for to store all newVideos created
+<span class="nc" id="L27">  final public static HashMap&lt;Video, Video&gt; bag = new HashMap&lt;Video, Video&gt;();</span>
+  
+
+  /**
+   * Factory method for Video objects.
+   * Title and director are &quot;trimmed&quot; to remove leading and final space.
+   * @throws IllegalArgumentException if Video invariant violated.
+   * @param title       title
+   * @param year          year
+   * @param director     director
+   * 
+   * @return Video       video
+   */
+  static public Video newVideo(String title, int year, String director) {
+    
+	//Check Invariants
+<span class="nc bnc" id="L43" title="All 6 branches missed.">	if (title == null || title == &quot;&quot; || title == &quot; &quot;)</span>
+<span class="nc" id="L44">			throw new IllegalArgumentException(&quot;Title must be non-null, have no leading or &quot;</span>
+					+ &quot;final spaces, and not be an empty string&quot;);
+<span class="nc bnc" id="L46" title="All 6 branches missed.">	if (director == null || director == &quot;&quot; || director == &quot; &quot;)</span>
+<span class="nc" id="L47">			throw new IllegalArgumentException(&quot;Director must be non-null, have no leading or &quot;</span>
+					+ &quot;final spaces, and not be an empty string&quot;);
+<span class="nc bnc" id="L49" title="All 4 branches missed.">	if (year &lt;= 1800 || year &gt;= 5000)</span>
+<span class="nc" id="L50">		throw new IllegalArgumentException(&quot;Year must be greater than 1800 or less than 5000&quot;);</span>
+	  
+	//Create video object with trimmed parameters
+<span class="nc" id="L53">	int y = Integer.parseInt(String.valueOf(year).trim());</span>
+<span class="nc" id="L54">	Video v = new VideoObj(title.trim(), y, director.trim());</span>
+	
+	//Add video to bag
+<span class="nc" id="L57">	bag.put(v, v);</span>
+	
+<span class="nc" id="L59">	return v;</span>
+  }
+
+  /**
+   * Returns a command to add or remove copies of a video from the inventory.
+   * &lt;p&gt;The returned command has the following behavior:&lt;/p&gt;
+   * &lt;ul&gt;
+   * &lt;li&gt;If a video record is not already present (and change is
+   * positive), a record is created.&lt;/li&gt;
+   * &lt;li&gt;If a record is already present, &lt;code&gt;numOwned&lt;/code&gt; is
+   * modified using &lt;code&gt;change&lt;/code&gt;.&lt;/li&gt;
+   * &lt;li&gt;If &lt;code&gt;change&lt;/code&gt; brings the number of copies to be less
+   * than one, the record is removed from the inventory.&lt;/li&gt;
+   * &lt;/ul&gt;
+   * @param inventory inventory
+   * @param video the video to be added.
+   * @param change the number of copies to add (or remove if negative).
+   * @throws IllegalArgumentException if inventory not created by a call to newInventory.
+   * @return CmdAdd new inventory set
+   */
+  static public UndoableCommand newAddCmd(Inventory inventory, Video video, int change) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (!(inventory instanceof InventorySet))</span>
+<span class="nc" id="L81">      throw new IllegalArgumentException();</span>
+<span class="nc" id="L82">    return new CmdAdd((InventorySet) inventory, video, change);</span>
+  }
+
+  /**
+   * Returns a command to check out a video.
+   * @param inventory inventory
+   * @param video the video to be checked out.
+   * @return CmdOut new inventory set
+   */
+  static public UndoableCommand newOutCmd(Inventory inventory, Video video) {
+<span class="nc bnc" id="L92" title="All 2 branches missed.">	  if (!(inventory instanceof InventorySet))</span>
+<span class="nc" id="L93">	      throw new IllegalArgumentException();</span>
+<span class="nc" id="L94">	    return new CmdOut((InventorySet) inventory, video);</span>
+  }
+  
+  /**
+   * Returns a command to check in a video.
+   * @param inventory inventory
+   * @param video the video to be checked in.
+   * @return CmdIn new inventory set
+   */
+  static public UndoableCommand newInCmd(Inventory inventory, Video video) {
+<span class="nc bnc" id="L104" title="All 2 branches missed.">	  if (!(inventory instanceof InventorySet))</span>
+<span class="nc" id="L105">	      throw new IllegalArgumentException();</span>
+<span class="nc" id="L106">	  return new CmdIn((InventorySet) inventory, video);</span>
+  }
+  
+  /**
+   * Returns a command to remove all records from the inventory.
+   * @param inventory inventory
+   * @return CmdClear new inventory set
+   */
+  static public UndoableCommand newClearCmd(Inventory inventory) {
+<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (!(inventory instanceof InventorySet))</span>
+<span class="nc" id="L116">      throw new IllegalArgumentException();</span>
+<span class="nc" id="L117">    return new CmdClear((InventorySet) inventory);</span>
+  }
+
+  /**
+   * Returns a command to undo that will undo the last successful UndoableCommand. 
+   * @param inventory inventory
+   * @return inventory new inventory set
+   */
+  static public RerunnableCommand newUndoCmd(Inventory inventory) {
+<span class="nc bnc" id="L126" title="All 2 branches missed.">	  if (!(inventory instanceof InventorySet))</span>
+<span class="nc" id="L127">	      throw new IllegalArgumentException();</span>
+<span class="nc" id="L128">	  return ((InventorySet)inventory).getHistory().getUndo();</span>
+  }
+
+  /**
+   * Returns a command to redo that last successfully undone command. 
+   * 
+   * @param inventory inventory
+   * @return inventory new inventory set
+   */
+  static public RerunnableCommand newRedoCmd(Inventory inventory) {
+<span class="nc bnc" id="L138" title="All 2 branches missed.">	  if (!(inventory instanceof InventorySet))</span>
+<span class="nc" id="L139">	      throw new IllegalArgumentException();</span>
+<span class="nc" id="L140">	  return ((InventorySet)inventory).getHistory().getRedo();</span>
+  }
+}  
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

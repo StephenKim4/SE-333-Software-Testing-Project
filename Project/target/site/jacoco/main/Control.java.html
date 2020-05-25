@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Control.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Project</a> &gt; <a href="index.source.html" class="el_package">main</a> &gt; <span class="el_source">Control.java</span></div><h1>Control.java</h1><pre class="source lang-java linenums">package main;
+
+import ui.UI;
+import ui.UIFormMenuInterface;
+import ui.UIMenuAction;
+import ui.UIFormMenuBuilderInterface;
+import ui.UIError;
+import ui.UIFactory;
+import ui.UIFormTest;
+import data.Data;
+import data.Inventory;
+import data.Video;
+import data.Record;
+import command.Command;
+import java.util.Iterator;
+import java.util.Comparator;
+
+
+/**
+ * Control class to set up the user interface.
+ * 
+ * @author Stephen Kim
+ */
+class Control {
+
+
+	static UIFormMenuInterface[] _menus;
+	static int _state;
+
+	static UIFormMenuInterface _getVideoForm;
+	static UIFormTest _numberTest;
+	static UIFormTest _stringTest;
+
+	static Inventory _inventory;
+	static UI _ui;
+<span class="nc" id="L36">	static UIFactory uiFactory = new UIFactory();</span>
+
+<span class="nc" id="L38">	Control(Inventory inventory, UI ui) {</span>
+<span class="nc" id="L39">		_inventory = inventory;</span>
+<span class="nc" id="L40">		_ui = ui;</span>
+
+<span class="nc" id="L42">		_menus = new UIFormMenuInterface[State.NUMSTATES.getValue()];</span>
+<span class="nc" id="L43">		_state = State.START.getValue();</span>
+<span class="nc" id="L44">		addSTART(State.START.getValue());</span>
+<span class="nc" id="L45">		addEXIT(State.EXIT.getValue()</span>
+				);
+
+<span class="nc" id="L48">		UIFormTest yearTest = FormTest.YEARTEST.getTest();</span>
+<span class="nc" id="L49">		_numberTest = FormTest.NUMBERTEST.getTest();</span>
+<span class="nc" id="L50">		_stringTest = FormTest.STRINGTEST.getTest();</span>
+
+<span class="nc" id="L52">		UIFormMenuBuilderInterface f = (UIFormMenuBuilderInterface) uiFactory.start(&quot;UIFMB&quot;, null, null);</span>
+<span class="nc" id="L53">		f.add(&quot;Title&quot;, _stringTest);</span>
+<span class="nc" id="L54">		f.add(&quot;Year&quot;, yearTest);</span>
+<span class="nc" id="L55">		f.add(&quot;Director&quot;, _stringTest);</span>
+<span class="nc" id="L56">		_getVideoForm = f.toUIFormMenu(&quot;Enter Video&quot;);</span>
+<span class="nc" id="L57">	}</span>
+
+	void run() {
+		try {
+<span class="nc bnc" id="L61" title="All 2 branches missed.">			while (_state != State.EXITED.getValue()) {</span>
+<span class="nc" id="L62">				_ui.processMenu(_menus[_state]);</span>
+			}
+<span class="nc" id="L64">		} catch (UIError e) {</span>
+<span class="nc" id="L65">			_ui.displayError(&quot;UI closed&quot;);</span>
+<span class="nc" id="L66">		}</span>
+<span class="nc" id="L67">	}</span>
+
+	private void addSTART(int stateNum) {
+<span class="nc" id="L70">		UIFormMenuBuilderInterface m = (UIFormMenuBuilderInterface) uiFactory.start(&quot;UIFMB&quot;, null, null);;</span>
+
+<span class="nc" id="L72">		m.add(&quot;Default&quot;, MenuAction.DEFAULT.getAction());</span>
+<span class="nc" id="L73">		m.add(&quot;Add/Remove copies of a video&quot;, MenuAction.ADDREMOVE.getAction());</span>
+<span class="nc" id="L74">		m.add(&quot;Check in a video&quot;, MenuAction.CHECKIN.getAction());</span>
+<span class="nc" id="L75">		m.add(&quot;Check out a video&quot;, MenuAction.CHECKOUT.getAction());</span>
+<span class="nc" id="L76">		m.add(&quot;Print the inventory&quot;, MenuAction.PRINT.getAction());</span>
+<span class="nc" id="L77">		m.add(&quot;Clear the inventory&quot;, MenuAction.CLEAR.getAction());</span>
+<span class="nc" id="L78">		m.add(&quot;Undo&quot;, MenuAction.UNDO.getAction());</span>
+<span class="nc" id="L79">		m.add(&quot;Redo&quot;, MenuAction.REDO.getAction());</span>
+<span class="nc" id="L80">		m.add(&quot;Print top ten all time rentals in order&quot;, MenuAction.TOPTEN.getAction());</span>
+<span class="nc" id="L81">		m.add(&quot;Exit&quot;, MenuAction.EXIT.getAction());</span>
+<span class="nc" id="L82">		m.add(&quot;Initialize with bogus contents&quot;, MenuAction.BOGUSINIT.getAction());</span>
+<span class="nc" id="L83">		_menus[stateNum] = m.toUIFormMenu(&quot;Bob's Video&quot;);</span>
+<span class="nc" id="L84">	}</span>
+	
+	private void addEXIT(int stateNum) {
+<span class="nc" id="L87">		UIFormMenuBuilderInterface m = (UIFormMenuBuilderInterface) uiFactory.start(&quot;UIFMB&quot;, null, null);</span>
+
+<span class="nc" id="L89">		m.add(&quot;Default&quot;, new UIMenuAction() { public void run() {} });</span>
+<span class="nc" id="L90">		m.add(&quot;Yes&quot;, MenuAction.YES.getAction());</span>
+<span class="nc" id="L91">		m.add(&quot;No&quot;, MenuAction.NO.getAction());</span>
+
+<span class="nc" id="L93">		_menus[stateNum] = m.toUIFormMenu(&quot;Are you sure you want to exit?&quot;);</span>
+<span class="nc" id="L94">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
