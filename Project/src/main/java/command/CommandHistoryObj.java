@@ -5,7 +5,7 @@ import java.util.Stack;
 final class CommandHistoryObj implements CommandHistory {
   Stack<UndoableCommand> _undoStack = new Stack<UndoableCommand>();
   Stack<UndoableCommand> _redoStack = new Stack<UndoableCommand>();
-  RerunnableCommand _undoCmd = new RerunnableCommand () {
+  RerunnableCommand _undoCmd = new RerunnableCommand() {
       public boolean run () {
         boolean result = !_undoStack.empty();
         try {
@@ -18,7 +18,7 @@ final class CommandHistoryObj implements CommandHistory {
         return result;
       }
     };
-  RerunnableCommand _redoCmd = new RerunnableCommand () {
+  RerunnableCommand _redoCmd = new RerunnableCommand() {
       public boolean run () {
         boolean result = !_redoStack.empty();
         try {

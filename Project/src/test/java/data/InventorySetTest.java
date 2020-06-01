@@ -10,31 +10,27 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
-
-
 /**
- * Class to test InventorySet.
+ * Class to test InventorySet and Record.
  * 
  * @author Stephen Kim
  *
  */
-public class InventoryTest {
+public class InventorySetTest {
 
+    //Create objects
     private static InventorySet inv;
     private static Video v1;
     private static Video v2;
     private static Video v3;
 
+    //Instantiate new objects before each test
     @BeforeEach
     public void startup() {
         inv = new InventorySet();
@@ -43,6 +39,7 @@ public class InventoryTest {
         v3 = new VideoObj("Coneheads", 1993, "Steve Barron");
     }
 
+    //addNumOwned null test
     @ParameterizedTest(name = "addNumOwned video null exceptions test")
     @MethodSource("addNumOwnedVideoNullException")
     void addNumOwnedVideoNullTest(Video video, int change) {
@@ -55,6 +52,7 @@ public class InventoryTest {
         );
     }
 
+    //addNumOwned illegal argument exceptions tests
     @ParameterizedTest(name = "addNumOwned video illegal argument exceptions test")
     @ValueSource(ints = {0, -2})
     void addNumOwnedVideoIllegalArgumentExceptionsTest(int change) {
@@ -62,6 +60,7 @@ public class InventoryTest {
         assertThrows(IllegalArgumentException.class, () -> inv.addNumOwned(v1, change));
     }
 
+    //addNumOwned test to add video
     @ParameterizedTest(name = "If record is null and change is greater than 0 add video to inventory")
     @ValueSource(ints = 1)
     void addNumOwnedRecordNullTest(int change) {
@@ -70,6 +69,7 @@ public class InventoryTest {
         assertEquals(v, inv.get(v1).video());
     }
 
+    //Test addNumOwned
     @ParameterizedTest(name = "addNumOwned test if record is not not null and no exceptions")
     @MethodSource("addNumOwnedTests")
     void addNumOwnedTests(int change, int expected) {
@@ -86,7 +86,7 @@ public class InventoryTest {
                 Arguments.of(-8, 2)
         );
     }
-
+    //addNumOwned test to remove video if numowned becomes 0
     @Test
     @DisplayName("addNumOwned test if change is negative and numowned becomes 0, remove video from inventoryset")
     void addNumOwnedRemoveVideoTest() {
@@ -95,6 +95,7 @@ public class InventoryTest {
         assertEquals(null, inv.get(v1));
     }
 
+    //Test size function
     @ParameterizedTest(name = "Verify size function")
     @MethodSource("sizeTests")
     void sizeTest(int initialV1, int changeV1, int initialV2, int changeV2, int expected) {
@@ -113,6 +114,7 @@ public class InventoryTest {
         );
     }
 
+    //Test clear method
     @Test
     @DisplayName("Clear removes all of the videos from inventoryset")
     void clearTest() {
@@ -122,40 +124,134 @@ public class InventoryTest {
         inv.clear();
         assertEquals(0, inv.size());
     }
+
     /*
+    checkOut method Tests
+     */
+    @ParameterizedTest(name = "Test for illegal argument exceptions")
+    @MethodSource("checkOutExceptionTests")
+    void checkOutExceptionTest(Video v) {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v2, 1);
+        inv.checkOut(v2);
+        assertThrows(IllegalArgumentException.class, () -> inv.checkOut(v));
+    }
+
+    private static Stream<Arguments> checkOutExceptionTests() {
+        return Stream.of(
+                Arguments.of(v3),
+                Arguments.of(v2)
+        );
+    }
+
+    @ParameterizedTest(name = "checkOut method increases numOut and numRentals by 1")
+    @MethodSource("checkOutTests")
+    void checkOutTest(Video v, int expected) {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v2, 20);
+        inv.checkOut(v);
+        assertEquals(expected, inv.get(v).numOut());
+        assertEquals(expected, inv.get(v).numRentals());
+    }
+
+    private static Stream<Arguments> checkOutTests() {
+        return Stream.of(
+                Arguments.of(v1, 1),
+                Arguments.of(v2, 1)
+        );
+    }
+
+    /*
+    checkIn method Tests
+     */
+    @ParameterizedTest(name = "Test for illegal argument exceptions")
+    @MethodSource("checkInExceptionTests")
+    void checkInExceptionTest(Video v) {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v2, 1);
+        assertThrows(IllegalArgumentException.class, () -> inv.checkIn(v));
+    }
+
+    private static Stream<Arguments> checkInExceptionTests() {
+        return Stream.of(
+                Arguments.of(v3),
+                Arguments.of(v2)
+        );
+    }
+
+    @ParameterizedTest(name = "checkIn method decreases numOut by 1")
+    @MethodSource("checkInTests")
+    void checkInTest(Video v, int expected) {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v2, 20);
+        inv.checkOut(v2);
+        inv.checkOut(v);
+        inv.checkIn(v);
+        assertEquals(expected, inv.get(v).numOut());
+    }
+
+    private static Stream<Arguments> checkInTests() {
+        return Stream.of(
+                Arguments.of(v1, 0),
+                Arguments.of(v2, 1)
+        );
+    }
+
+    //Test get method
+    @ParameterizedTest(name = "get method returns record")
+    @MethodSource("getRecordTests")
+    void getRecordTest(Video v, InventorySet.RecordObj expected) {
+        inv.addNumOwned(v1, 10);
+        inv.addNumOwned(v2, 1);
+        assertEquals(expected, inv.get(v));
+    }
+
+    private static Stream<Arguments> getRecordTests() {
+        return Stream.of(
+                Arguments.of(v1, new InventorySet.RecordObj(v1, 10, 1, 1)),
+                Arguments.of(v2, new InventorySet.RecordObj(v2, 1, 1, 1)),
+                Arguments.of(v3, null)
+        );
+    }
+
+    //Verify toString function returns correct InventorySet
+    @ParameterizedTest(name = "toString tests")
+    @MethodSource("toStringTests")
+    void toStringTest(Video v, String expected) {
+        inv.addNumOwned(v, 10);
+        assertEquals(expected, inv.toString());
+    }
+
+    private static Stream<Arguments> toStringTests() {
+        return Stream.of(
+                Arguments.of(v1, "Database:" + "\n" +"  True Romance (1993) : Quentin Tarantino [10,0,0]\n"),
+                Arguments.of(v2, "Database:" + "\n" +"  Fast Times at Ridgemont High (1982) : Amy Heckerling [10,0,0]\n")
+        );
+    }
+
+    //Verify replaceMap function returns correct map
+    @ParameterizedTest(name = "replaceMap tests")
+    @MethodSource("replaceMapTests")
+    void replaceMapTest(Video v, Record r, String s) {
+        inv.addNumOwned(v1, 2);
+        inv.addNumOwned(v2, 2);
+        Map<Video, Record> map = new HashMap<Video, Record>();
+        map.put(v, r);
+        inv.replaceMap(map);
+        assertEquals(s, inv.toString());
+    }
+
+    private static Stream<Arguments> replaceMapTests() {
+        return Stream.of(
+                Arguments.of(v1, new InventorySet.RecordObj(v1, 10, 0, 0), "Database:" + "\n" +"  True Romance (1993) : Quentin Tarantino [10,0,0]\n"),
+                Arguments.of(v2, new InventorySet.RecordObj(v2, 1, 0, 0), "Database:" + "\n" +"  Fast Times at Ridgemont High (1982) : Amy Heckerling [1,0,0]\n")
+        );
+    }
 
 
-  public void testCheckOutCheckIn() {
-    try { s.checkOut(null);     fail(); } catch ( IllegalArgumentException e ) {}
-    try { s.checkIn(null);      fail(); } catch ( IllegalArgumentException e ) {}
-          s.addNumOwned(v1, 2); assertTrue( s.get(v1).numOut() == 0 && s.get(v1).numRentals() == 0 );
-          s.checkOut(v1);       assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 1 );
-    try { s.addNumOwned(v1,-3); fail(); } catch ( IllegalArgumentException e ) {}
-    try { s.addNumOwned(v1,-2); fail(); } catch ( IllegalArgumentException e ) {}
-          s.addNumOwned(v1,-1); assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 1 );
-          s.addNumOwned(v1, 1); assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 1 );
-          s.checkOut(v1);       assertTrue( s.get(v1).numOut() == 2 && s.get(v1).numRentals() == 2 );
-    try { s.checkOut(v1);       fail(); } catch ( IllegalArgumentException e ) {}
-          s.checkIn(v1);        assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 2 );
-          s.checkIn(v1copy);    assertTrue( s.get(v1).numOut() == 0 && s.get(v1).numRentals() == 2 );
-    try { s.checkIn(v1);        fail(); } catch ( IllegalArgumentException e ) {}
-    try { s.checkOut(v2);       fail(); } catch ( IllegalArgumentException e ) {}
-          s.checkOut(v1);       assertTrue( s.get(v1).numOut() == 1 && s.get(v1).numRentals() == 3 );
-  }
 
 
-  public void testGet() {
-    s.addNumOwned(v1, 1);
-    Record r1 = s.get(v1);
-    Record r2 = s.get(v1);
-    assertTrue( r1.equals(r2) );
-    assertTrue( r1 == r2 );
-    Video v5 = new VideoObj("A", 4254, "B");
-    assertEquals(null, s.get(v5));
-    
-  }
-  
-
+    /*
 
   public void testIterator1() {
     Set<Video> expected = new HashSet<Video>();

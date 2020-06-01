@@ -52,4 +52,27 @@ final class CmdAdd implements UndoableCommand {
   public void redo() {
     _inventory.addNumOwned(_video, _change);
   }
+
+  //Equals Method
+  public boolean equals(Object thatObject) {
+
+      //If object is null return false
+      if (thatObject == null)
+        return false;
+
+      //If object is not instance of cmdadd return false
+      if (!(thatObject instanceof CmdAdd)) return false;
+
+      //If object is the same then true
+      if (thatObject == this) return true;
+
+      //Create instance of object
+      CmdAdd v = (CmdAdd) thatObject;
+
+      //Check equality of parameters if video not in hashmap
+      if (this._inventory.equals(v._inventory) && this._video == v._video && this._change == (v._change)) {
+        return true;
+      }
+      return false;
+  }
 }

@@ -86,7 +86,7 @@ class Control {
 	private void addEXIT(int stateNum) {
 <span class="nc" id="L87">		UIFormMenuBuilderInterface m = (UIFormMenuBuilderInterface) uiFactory.start(&quot;UIFMB&quot;, null, null);</span>
 
-<span class="nc" id="L89">		m.add(&quot;Default&quot;, new UIMenuAction() { public void run() {} });</span>
+<span class="nc" id="L89">		m.add(&quot;Default&quot;, () -&gt; {});</span>
 <span class="nc" id="L90">		m.add(&quot;Yes&quot;, MenuAction.YES.getAction());</span>
 <span class="nc" id="L91">		m.add(&quot;No&quot;, MenuAction.NO.getAction());</span>
 

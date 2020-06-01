@@ -17,10 +17,10 @@ final class VideoObj implements Video {
 	 * @param director    director
 	 */
 <span class="fc" id="L19">	public VideoObj(String title, int year, String director) {</span>
-<span class="fc bfc" id="L20" title="All 6 branches covered.">		if (title == null || title == &quot;&quot; || title == &quot; &quot;)</span>
+<span class="fc bfc" id="L20" title="All 6 branches covered.">		if (title == (null) || title.equals(&quot;&quot;) || title.equals(&quot; &quot;))</span>
 <span class="fc" id="L21">			throw new IllegalArgumentException(&quot;Title must be non-null, have no leading or &quot;</span>
 					+ &quot;final spaces, and not be an empty string&quot;);
-<span class="fc bfc" id="L23" title="All 6 branches covered.">		if (director == null || director == &quot;&quot; || director == &quot; &quot;)</span>
+<span class="fc bfc" id="L23" title="All 6 branches covered.">		if (director == null || director.equals(&quot;&quot;) || director.equals(&quot; &quot;))</span>
 <span class="fc" id="L24">			throw new IllegalArgumentException(&quot;Director must be non-null, have no leading or &quot;</span>
 					+ &quot;final spaces, and not be an empty string&quot;);
 <span class="fc bfc" id="L26" title="All 4 branches covered.">		if (year &lt;= 1800 || year &gt;= 5000)</span>
@@ -58,13 +58,13 @@ final class VideoObj implements Video {
 
 		//If object is null return false
 <span class="fc bfc" id="L60" title="All 2 branches covered.">		if (thatObject == null)</span>
-<span class="fc" id="L61">			throw new NullPointerException(&quot;Null Object&quot;);</span>
+<span class="fc" id="L61">			return false;</span>
 
 		//If object is not instance of videoobj return false
-<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj)) return false;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if (!(thatObject instanceof VideoObj)) return false;</span>
 
 		//If object is the same then true
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">		if (thatObject == this) return true;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (thatObject == this) return true;</span>
 
 		//Create instance of object
 <span class="fc" id="L70">		VideoObj v = (VideoObj) thatObject;</span>
@@ -95,7 +95,7 @@ final class VideoObj implements Video {
 
 <span class="fc" id="L96">		VideoObj v = (VideoObj) thatObject;</span>
 
-<span class="pc bpc" id="L98" title="1 of 4 branches missed.">		if (thatObject == null &amp;&amp; this != null)</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">		if (thatObject == null)</span>
 <span class="fc" id="L99">			throw new NullPointerException();</span>
 
 <span class="pc bpc" id="L101" title="1 of 2 branches missed.">		if (!(thatObject instanceof VideoObj))</span>

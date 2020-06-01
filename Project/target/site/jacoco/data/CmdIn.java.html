@@ -10,10 +10,10 @@ final class CmdIn implements UndoableCommand {
   private InventorySet _inventory;
   private Record _oldvalue;
   private Video _video;
-<span class="nc" id="L13">  CmdIn(InventorySet inventory, Video video) {</span>
-<span class="nc" id="L14">    _inventory = inventory;</span>
-<span class="nc" id="L15">    _video = video;</span>
-<span class="nc" id="L16">  }</span>
+<span class="fc" id="L13">  CmdIn(InventorySet inventory, Video video) {</span>
+<span class="fc" id="L14">    _inventory = inventory;</span>
+<span class="fc" id="L15">    _video = video;</span>
+<span class="fc" id="L16">  }</span>
   
   /**
    * Do the command.
@@ -48,5 +48,28 @@ final class CmdIn implements UndoableCommand {
     
 <span class="nc" id="L49">	  _inventory.checkIn(_video);</span>
 <span class="nc" id="L50">  }</span>
+
+    //Equals Method
+    public boolean equals(Object thatObject) {
+
+        //If object is null return false
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (thatObject == null)</span>
+<span class="nc" id="L57">            return false;</span>
+
+        //If object is not instance of cmdin return false
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (!(thatObject instanceof CmdIn)) return false;</span>
+
+        //If object is the same then true
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (thatObject == this) return true;</span>
+
+        //Create instance of object
+<span class="fc" id="L66">        CmdIn v = (CmdIn) thatObject;</span>
+
+        //Check equality of parameters if video not in hashmap
+<span class="pc bpc" id="L69" title="2 of 4 branches missed.">        if (this._inventory.equals(v._inventory) &amp;&amp; this._video == v._video) {</span>
+<span class="fc" id="L70">            return true;</span>
+        }
+<span class="nc" id="L72">        return false;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

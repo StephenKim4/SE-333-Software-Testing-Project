@@ -17,10 +17,10 @@ final class VideoObj implements Video {
 	 * @param director    director
 	 */
 	public VideoObj(String title, int year, String director) {
-		if (title == null || title == "" || title == " ")
+		if (title == (null) || title.equals("") || title.equals(" "))
 			throw new IllegalArgumentException("Title must be non-null, have no leading or "
 					+ "final spaces, and not be an empty string");
-		if (director == null || director == "" || director == " ")
+		if (director == null || director.equals("") || director.equals(" "))
 			throw new IllegalArgumentException("Director must be non-null, have no leading or "
 					+ "final spaces, and not be an empty string");
 		if (year <= 1800 || year >= 5000)
@@ -58,7 +58,7 @@ final class VideoObj implements Video {
 
 		//If object is null return false
 		if (thatObject == null)
-			throw new NullPointerException("Null Object");
+			return false;
 
 		//If object is not instance of videoobj return false
 		if (!(thatObject instanceof VideoObj)) return false;
@@ -95,7 +95,7 @@ final class VideoObj implements Video {
 
 		VideoObj v = (VideoObj) thatObject;
 
-		if (thatObject == null && this != null)
+		if (thatObject == null)
 			throw new NullPointerException();
 
 		if (!(thatObject instanceof VideoObj))

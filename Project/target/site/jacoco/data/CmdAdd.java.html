@@ -14,11 +14,11 @@ final class CmdAdd implements UndoableCommand {
   private Record _oldvalue;
   private Video _video;
   private int _change;
-<span class="nc" id="L17">  CmdAdd(InventorySet inventory, Video video, int change) {</span>
-<span class="nc" id="L18">    _inventory = inventory;</span>
-<span class="nc" id="L19">    _video = video;</span>
-<span class="nc" id="L20">    _change = change;</span>
-<span class="nc" id="L21">  }</span>
+<span class="fc" id="L17">  CmdAdd(InventorySet inventory, Video video, int change) {</span>
+<span class="fc" id="L18">    _inventory = inventory;</span>
+<span class="fc" id="L19">    _video = video;</span>
+<span class="fc" id="L20">    _change = change;</span>
+<span class="fc" id="L21">  }</span>
   
   /**
    * Do the command.
@@ -52,5 +52,28 @@ final class CmdAdd implements UndoableCommand {
   public void redo() {
 <span class="nc" id="L53">    _inventory.addNumOwned(_video, _change);</span>
 <span class="nc" id="L54">  }</span>
+
+  //Equals Method
+  public boolean equals(Object thatObject) {
+
+      //If object is null return false
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">      if (thatObject == null)</span>
+<span class="nc" id="L61">        return false;</span>
+
+      //If object is not instance of cmdadd return false
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">      if (!(thatObject instanceof CmdAdd)) return false;</span>
+
+      //If object is the same then true
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">      if (thatObject == this) return true;</span>
+
+      //Create instance of object
+<span class="fc" id="L70">      CmdAdd v = (CmdAdd) thatObject;</span>
+
+      //Check equality of parameters if video not in hashmap
+<span class="pc bpc" id="L73" title="3 of 6 branches missed.">      if (this._inventory.equals(v._inventory) &amp;&amp; this._video == v._video &amp;&amp; this._change == (v._change)) {</span>
+<span class="fc" id="L74">        return true;</span>
+      }
+<span class="nc" id="L76">      return false;</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

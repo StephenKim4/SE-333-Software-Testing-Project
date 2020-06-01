@@ -1,22 +1,15 @@
 package data;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Comparator;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import command.Command;
-import command.UndoableCommand;
 import command.CommandHistory;
 import command.CommandHistoryFactory;
+
+import java.util.*;
 
 /**
  * Implementation of Inventory interface.
  * @see Data
  */
-final class InventorySet implements Inventory {
+public class InventorySet implements Inventory {
   private Map<Video,Record> _data;
   private final CommandHistory _history;
 
@@ -196,7 +189,7 @@ final class InventorySet implements Inventory {
    *
    * @see Record
    */
-  private static final class RecordObj implements Record {
+  static class RecordObj implements Record {
     Video video; // the video
     int numOwned;   // copies owned
     int numOut;     // copies currently rented
@@ -208,27 +201,40 @@ final class InventorySet implements Inventory {
       this.numOut = numOut;
       this.numRentals = numRentals;
     }
+
     RecordObj copy() {
       return new RecordObj(video, numOwned, numOut, numRentals);
     }
+
     public Video video() {
       return video;
     }
+
     public int numOwned() {
       return numOwned;
     }
+
     public int numOut() {
       return numOut;
     }
+
     public int numRentals() {
       return numRentals;
     }
+
     public boolean equals(Object thatObject) {
+      if (thatObject == null) {
+        return false;
+      }
       return video.equals(((Record)thatObject).video());
     }
+
+
     public int hashCode() {
       return video.hashCode();
     }
+
+
     public String toString() {
       StringBuffer buffer = new StringBuffer();
       buffer.append(video);

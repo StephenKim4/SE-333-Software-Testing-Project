@@ -10,10 +10,10 @@ final class CmdOut implements UndoableCommand {
   private InventorySet _inventory;
   private Record _oldvalue;
   private Video _video;
-<span class="nc" id="L13">  CmdOut(InventorySet inventory, Video video) {</span>
-<span class="nc" id="L14">    _inventory = inventory;</span>
-<span class="nc" id="L15">    _video = video;</span>
-<span class="nc" id="L16">  }</span>
+<span class="fc" id="L13">  CmdOut(InventorySet inventory, Video video) {</span>
+<span class="fc" id="L14">    _inventory = inventory;</span>
+<span class="fc" id="L15">    _video = video;</span>
+<span class="fc" id="L16">  }</span>
   
   /**
    * Do the command.
@@ -50,5 +50,28 @@ final class CmdOut implements UndoableCommand {
 <span class="nc" id="L50">	  _inventory.checkOut(_video);</span>
 	  
 <span class="nc" id="L52">  }</span>
+
+    //Equals Method
+    public boolean equals(Object thatObject) {
+
+        //If object is null return false
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (thatObject == null)</span>
+<span class="nc" id="L59">            return false;</span>
+
+        //If object is not instance of cmdout return false
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (!(thatObject instanceof CmdOut)) return false;</span>
+
+        //If object is the same then true
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (thatObject == this) return true;</span>
+
+        //Create instance of object
+<span class="fc" id="L68">        CmdOut v = (CmdOut) thatObject;</span>
+
+        //Check equality of parameters if video not in hashmap
+<span class="pc bpc" id="L71" title="2 of 4 branches missed.">        if (this._inventory.equals(v._inventory) &amp;&amp; this._video == v._video) {</span>
+<span class="fc" id="L72">            return true;</span>
+        }
+<span class="nc" id="L74">        return false;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

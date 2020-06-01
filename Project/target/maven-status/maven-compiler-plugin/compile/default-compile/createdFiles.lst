@@ -50,6 +50,5 @@ main\MenuAction$4.class
 data\CmdClear.class
 data\VideoObj.class
 ui\GenericPair.class
-main\Control$1.class
 command\RerunnableCommand.class
 ui\UIFormMenuAux.class

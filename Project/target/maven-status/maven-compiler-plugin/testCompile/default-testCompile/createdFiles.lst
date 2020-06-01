@@ -3,7 +3,8 @@ main\TEST1$1.class
 command\CommandHistoryTEST.class
 command\CommandHistoryTEST$1CmdSuccess.class
 command\CommandHistoryTEST$1MockCommand.class
+data\InventorySetTest.class
 data\VideoTest.class
 main\TEST2.class
-data\InventoryTest.class
+data\RecordTest.class
 main\TEST1.class

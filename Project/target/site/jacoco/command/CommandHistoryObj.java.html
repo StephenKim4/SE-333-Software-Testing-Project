@@ -5,7 +5,7 @@ import java.util.Stack;
 <span class="fc" id="L5">final class CommandHistoryObj implements CommandHistory {</span>
 <span class="fc" id="L6">  Stack&lt;UndoableCommand&gt; _undoStack = new Stack&lt;UndoableCommand&gt;();</span>
 <span class="fc" id="L7">  Stack&lt;UndoableCommand&gt; _redoStack = new Stack&lt;UndoableCommand&gt;();</span>
-<span class="fc" id="L8">  RerunnableCommand _undoCmd = new RerunnableCommand () {</span>
+<span class="fc" id="L8">  RerunnableCommand _undoCmd = new RerunnableCommand() {</span>
       public boolean run () {
 <span class="nc bnc" id="L10" title="All 2 branches missed.">        boolean result = !_undoStack.empty();</span>
         try {
@@ -18,7 +18,7 @@ import java.util.Stack;
 <span class="nc" id="L18">        return result;</span>
       }
     };
-<span class="fc" id="L21">  RerunnableCommand _redoCmd = new RerunnableCommand () {</span>
+<span class="fc" id="L21">  RerunnableCommand _redoCmd = new RerunnableCommand() {</span>
       public boolean run () {
 <span class="nc bnc" id="L23" title="All 2 branches missed.">        boolean result = !_redoStack.empty();</span>
         try {

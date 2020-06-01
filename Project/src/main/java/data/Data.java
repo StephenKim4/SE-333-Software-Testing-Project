@@ -1,10 +1,9 @@
 package data;
 
-import java.util.HashMap;
-import java.util.WeakHashMap;
-
 import command.RerunnableCommand;
 import command.UndoableCommand;
+
+import java.util.HashMap;
 
 /**
  * A static class for accessing data objects.
@@ -12,6 +11,7 @@ import command.UndoableCommand;
 public class Data {
 	
   private Data() {}
+
   
   
   /**
@@ -40,10 +40,10 @@ public class Data {
   static public Video newVideo(String title, int year, String director) {
     
 	//Check Invariants
-	if (title == null || title == "" || title == " ")
+	if (title == null || title.equals("") || title.equals(" "))
 			throw new IllegalArgumentException("Title must be non-null, have no leading or "
 					+ "final spaces, and not be an empty string");
-	if (director == null || director == "" || director == " ")
+	if (director == null || director.equals("") || director.equals(" "))
 			throw new IllegalArgumentException("Director must be non-null, have no leading or "
 					+ "final spaces, and not be an empty string");
 	if (year <= 1800 || year >= 5000)

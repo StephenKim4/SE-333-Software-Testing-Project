@@ -48,4 +48,27 @@ final class CmdIn implements UndoableCommand {
     
 	  _inventory.checkIn(_video);
   }
+
+    //Equals Method
+    public boolean equals(Object thatObject) {
+
+        //If object is null return false
+        if (thatObject == null)
+            return false;
+
+        //If object is not instance of cmdin return false
+        if (!(thatObject instanceof CmdIn)) return false;
+
+        //If object is the same then true
+        if (thatObject == this) return true;
+
+        //Create instance of object
+        CmdIn v = (CmdIn) thatObject;
+
+        //Check equality of parameters if video not in hashmap
+        if (this._inventory.equals(v._inventory) && this._video == v._video) {
+            return true;
+        }
+        return false;
+    }
 }

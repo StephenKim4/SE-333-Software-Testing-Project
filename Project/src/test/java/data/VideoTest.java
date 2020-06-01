@@ -6,9 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import java.awt.*;
+
 import java.util.stream.Stream;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 
@@ -66,6 +68,8 @@ public class VideoTest {
 		);
 	}
 
+
+
 	//Verify that hashcode function works correctly
 	@ParameterizedTest(name = "Hashcode tests")
 	@MethodSource("hashTests")
@@ -113,13 +117,14 @@ public class VideoTest {
 	//Check compareTo function for class cast exception
 	@ParameterizedTest(name = "Check compareTo method class cast exceptions")
 	@MethodSource("compareToClassExceptions")
-	void compareToClassExceptionTests(VideoObj thisObj, Object thatObj) {
-		assertThrows(ClassCastException.class, () -> thisObj.compareTo(thatObj));
+	void compareToClassExceptionTests(VideoObj thisObj, VideoObj thatObj) {
+		InventorySet.RecordObj r = new InventorySet.RecordObj(thatObj, 4, 3, 3);
+		assertThrows(ClassCastException.class, () -> thisObj.compareTo(r));
 	}
 
 	private static Stream<Arguments> compareToClassExceptions() {
 		return Stream.of(
-				Arguments.of(new VideoObj("Spawn",1997,"Mark Dippe"), new Object())
+				Arguments.of(new VideoObj("Spawn",1997,"Mark Dippe"), new VideoObj("Spawn",1997,"Mark Dippe"))
 		);
 	}
 
@@ -142,16 +147,25 @@ public class VideoTest {
 		);
 	}
 
-	//Verify equals method null pointer exception
+	//Equals method returns false if object argument is null
 	@Test
-	@DisplayName("Throw exception if object is null")
+	@DisplayName("Equals method returns false if object argument is null")
 	void equalsNullTest() {
-		VideoObj movie = new VideoObj("Striptease", 1996, "Andrew Bergman");
-		assertThrows(NullPointerException.class, () -> movie.equals(null));
+		VideoObj k = new VideoObj("Spawn",1997,"Mark Dippe");
+		assertEquals(false, k.equals(null));
+	}
+
+	//Equals method returns false if object is not the same instance
+	@Test
+	@DisplayName("Equals method returns false if object argument is the same instance")
+	void equalsInstanceOfTest() {
+		VideoObj k = new VideoObj("Spawn",1997,"Mark Dippe");
+		InventorySet.RecordObj j = new InventorySet.RecordObj(k, 4, 2, 2);
+		assertEquals(false, k.equals(j));
 	}
 
 	//Verify equals method
-	@ParameterizedTest(name = "Check compareTo method class cast exceptions")
+	@ParameterizedTest(name = "Check equals method")
 	@MethodSource("equalsTestsFull")
 	void equalsTests(VideoObj thisObj, Object thatObj, boolean b) {
 		assertEquals(b, thatObj.equals(thisObj));
